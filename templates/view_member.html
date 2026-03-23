@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Member Profile</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .container {
+            width: 70%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .section h3 {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .row {
+            margin: 8px 0;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: block;
+            width: 150px;
+            margin: 20px auto;
+            text-align: center;
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Member Profile</h2>
+
+<!-- PERSONAL -->
+<div class="section">
+<h3>Personal Identification</h3>
+
+<div class="row"><span class="label">Name:</span> {{ member.name }}</div>
+<div class="row"><span class="label">ID Number:</span> {{ member.id_number }}</div>
+<div class="row"><span class="label">Birthdate:</span> {{ member.birthdate }}</div>
+<div class="row"><span class="label">Phone:</span> {{ member.phone }}</div>
+<div class="row"><span class="label">Gender:</span> {{ member.gender }}</div>
+<div class="row"><span class="label">Marital Status:</span> {{ member.marital_status }}</div>
+<div class="row"><span class="label">Parent Name:</span> {{ member.parents }}</div>
+
+</div>
+
+<!-- LOCATION -->
+<div class="section">
+<h3>Location Details</h3>
+
+<div class="row"><span class="label">Country:</span> {{ member.country }}</div>
+<div class="row"><span class="label">Province:</span> {{ member.province }}</div>
+<div class="row"><span class="label">District:</span> {{ member.district }}</div>
+<div class="row"><span class="label">Sector:</span> {{ member.sector }}</div>
+<div class="row"><span class="label">Cell:</span> {{ member.cell }}</div>
+<div class="row"><span class="label">Village:</span> {{ member.village }}</div>
+
+</div>
+
+<!-- CHURCH -->
+<div class="section">
+<h3>Church Responsibilities</h3>
+
+<div class="row"><span class="label">Role:</span> {{ member.role }}</div>
+<div class="row"><span class="label">Baptized:</span> {{ member.baptized }}</div>
+<div class="row"><span class="label">Itsinda:</span> {{ member.itsinda }}</div>
+
+</div>
+
+<a href="/members" class="back-btn">Back</a>
+
+</div>
+
+</body>
+</html>

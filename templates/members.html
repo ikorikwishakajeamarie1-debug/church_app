@@ -1,0 +1,172 @@
+<form method="GET" action="/members" style="text-align:center; margin-bottom:15px;">
+    <input type="text" name="search" placeholder="Search by name, phone, district"
+           style="padding:8px; width:250px;">
+    <button type="submit" style="padding:8px;">Search</button>
+</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Church Members</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        /* 🟢 MAIN TITLE */
+        .main-title {
+            text-align: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            background: white;
+            color: #2c3e50;
+        }
+
+        /* 🔵 NAVBAR BELOW TITLE */
+        .navbar {
+            background-color: #007BFF;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+        }
+
+        /* ➕ ADD BUTTON */
+        .top-bar {
+            width: 95%;
+            margin: 15px auto;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .add-btn {
+            background: green;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        /* 📊 TABLE */
+        .table-container {
+            width: 95%;
+            margin: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f1f7ff;
+        }
+
+        /* ACTION BUTTONS */
+        .action a {
+            padding: 6px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            margin: 2px;
+        }
+
+        .view {
+            background: #3498db;
+        }
+
+        .delete {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🟢 TITLE FIRST -->
+<div class="main-title">
+    Church Data Management System
+</div>
+
+<!-- 🔵 MENU UNDER TITLE -->
+<div class="navbar">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/members" style="background:#0056b3;">Church Members</a>
+    <a href="/staff">Staff</a>
+    <a href="/infrastructure">Infrastructure</a>
+    <a href="/finance">Finance</a>
+    <a href="/newborn">Newborn</a>
+</div>
+
+<!-- ➕ ADD BUTTON -->
+<div class="top-bar">
+    <a href="/add" class="add-btn">+ Add Member</a>
+</div>
+
+<!-- 📊 TABLE -->
+<div class="table-container">
+<table>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>ID Number</th>
+        <th>Gender</th>
+        <th>Phone</th>
+        <th>District</th>
+        <th>Role</th>
+        <th>Baptized</th>
+        <th>Action</th>
+    </tr>
+
+    {% for m in members %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td><b>{{ m.name }}</b></td>
+        <td>{{ m.id_number }}</td>
+        <td>{{ m.gender }}</td>
+        <td>{{ m.phone }}</td>
+        <td>{{ m.district }}</td>
+        <td>{{ m.role }}</td>
+        <td>{{ m.baptized }}</td>
+
+        <td class="action">
+            <a href="/view/{{ m.id }}" class="view">View</a>
+            <a href="/delete/{{ m.id }}" class="delete">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+</body>
+</html>

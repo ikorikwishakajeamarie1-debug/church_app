@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Member</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        h3 {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Member Details</h2>
+
+<!-- SECTION 1 -->
+<div class="section">
+<h3>1. Personal Identification</h3>
+
+<p><b>Names:</b> {{ member.name }}</p>
+<p><b>ID Number:</b> {{ member.id_number }}</p>
+<p><b>Birthdate:</b> {{ member.birthdate }}</p>
+<p><b>Gender:</b> {{ member.gender }}</p>
+<p><b>Phone:</b> {{ member.phone }}</p>
+<p><b>Marital Status:</b> {{ member.marital_status }}</p>
+<p><b>Parents Name:</b> {{ member.parents_name }}</p>
+</div>
+
+<!-- SECTION 2 -->
+<div class="section">
+<h3>2. Personal Location Details</h3>
+
+<p><b>Country:</b> {{ member.country }}</p>
+<p><b>Province:</b> {{ member.province }}</p>
+<p><b>District:</b> {{ member.district }}</p>
+<p><b>Sector:</b> {{ member.sector }}</p>
+<p><b>Cell:</b> {{ member.cell }}</p>
+<p><b>Village:</b> {{ member.village }}</p>
+</div>
+
+<!-- SECTION 3 -->
+<div class="section">
+<h3>3. Church Responsibilities</h3>
+
+<p><b>Role:</b> {{ member.role }}</p>
+<p><b>Baptized:</b> {{ member.baptized }}</p>
+<p><b>Itsinda:</b> {{ member.itsinda }}</p>
+<p><b>Decision:</b> {{ member.decision }}</p>
+
+</div>
+
+</div>
+
+</body>
+</html>

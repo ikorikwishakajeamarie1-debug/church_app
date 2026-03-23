@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Edit Member</h2>
+
+<form method="POST">
+
+    Name:<br>
+    <input type="text" name="name" value="{{ member[1] }}"><br><br>
+
+    ID Number:<br>
+    <input type="text" name="id_number" value="{{ member[2] }}"><br><br>
+
+    Phone:<br>
+    <input type="text" name="phone" value="{{ member[3] }}"><br><br>
+
+    Birthdate:<br>
+    <input type="date" name="birthdate" value="{{ member[4] }}"><br><br>
+
+    Country:<br>
+    <input type="text" name="country" value="{{ member[5] }}"><br><br>
+
+    Province:<br>
+    <input type="text" name="province" value="{{ member[6] }}"><br><br>
+
+    District:<br>
+    <input type="text" name="district" value="{{ member[7] }}"><br><br>
+
+    Sector:<br>
+    <input type="text" name="sector" value="{{ member[8] }}"><br><br>
+
+    Cell:<br>
+    <input type="text" name="cell" value="{{ member[9] }}"><br><br>
+
+    Village:<br>
+    <input type="text" name="village" value="{{ member[10] }}"><br><br>
+
+    Gender:<br>
+    <select name="gender">
+        <option value="Male" {% if member[11]=='Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if member[11]=='Female' %}selected{% endif %}>Female</option>
+    </select><br><br>
+
+    Parents Name:<br>
+    <input type="text" name="parents_name" value="{{ member[12] }}"><br><br>
+
+    Marital Status:<br>
+    <input type="text" name="marital_status" value="{{ member[13] }}"><br><br>
+
+    Role:<br>
+    <input type="text" name="role" value="{{ member[14] }}"><br><br>
+
+    Baptized:<br>
+    <select name="baptized">
+        <option value="Yes" {% if member[15]=='Yes' %}selected{% endif %}>Yes</option>
+        <option value="No" {% if member[15]=='No' %}selected{% endif %}>No</option>
+    </select><br><br>
+
+    Group:<br>
+    <input type="text" name="group_name" value="{{ member[16] }}"><br><br>
+
+    <button type="submit">Update Member</button>
+
+</form>
+
+{% endblock %}

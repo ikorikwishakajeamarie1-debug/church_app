@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Church Data Management System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f4f6f9;
+        }
+
+        /* HEADER */
+        .header {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* MENU */
+        .menu {
+            display: flex;
+            justify-content: center;
+            background: #34495e;
+        }
+
+        .menu a {
+            color: white;
+            padding: 12px 15px;
+            text-decoration: none;
+        }
+
+        .menu a:hover {
+            background: #2c3e50;
+        }
+
+        /* CONTAINER */
+        .container {
+            padding: 20px;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .add-btn {
+            background: green;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .print-btn {
+            background: orange;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* SEARCH */
+        .search-box {
+            text-align: center;
+            margin: 15px;
+        }
+
+        .search-box input {
+            padding: 10px;
+            width: 300px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        /* ACTION */
+        .action-btn {
+            background: pink;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 8px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .dropdown a:hover {
+            background: #eee;
+        }
+
+        .action-container {
+            position: relative;
+        }
+
+    </style>
+
+    <script>
+        function toggleMenu(id) {
+            var el = document.getElementById(id);
+            el.style.display = (el.style.display === "block") ? "none" : "block";
+        }
+
+        function printPage() {
+            window.print();
+        }
+    </script>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    Church Data Management System
+</div>
+
+<!-- MENU -->
+<div class="menu">
+    <a href="#">Dashboard</a>
+    <a href="#">Church Members</a>
+    <a href="#">Staff</a>
+    <a href="#">Infrastructure</a>
+    <a href="#">Finance</a>
+    <a href="#">Newborn</a>
+</div>
+
+<div class="container">
+
+    <!-- TOP BUTTONS -->
+    <div class="top-bar">
+        <a href="/add" class="add-btn">+ Add Member</a>
+        <button class="print-btn" onclick="printPage()">PDF / Print</button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+        <form method="GET">
+            <input type="text" name="search" placeholder="Search by Name or ID">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- TABLE -->
+    <table>
+        <tr>
+            <th>Names</th>
+            <th>ID Number</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Action</th>
+            <th>Decision</th>
+        </tr>
+
+        {% for member in members %}
+        <tr>
+            <td>{{ member.name }}</td>
+            <td>{{ member.id_number }}</td>
+            <td>{{ member.gender }}</td>
+            <td>{{ member.phone }}</td>
+
+            <td class="action-container">
+                <span class="action-btn" onclick="toggleMenu('menu{{ member.id }}')">⋮</span>
+
+                <div class="dropdown" id="menu{{ member.id }}">
+                    <a href="/view/{{ member.id }}">View</a>
+                    <a href="/edit/{{ member.id }}">Edit</a>
+                    <a href="/delete/{{ member.id }}" onclick="return confirm('Delete?')">Delete</a>
+                </div>
+            </td>
+
+            <td>{{ member.decision }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>

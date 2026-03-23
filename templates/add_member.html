@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Member</title>
+
+    <style>
+        body { font-family: Arial; background:#f4f6f9; }
+        .container { width:70%; margin:auto; background:white; padding:20px; }
+        h2 { text-align:center; }
+
+        .section { margin-top:20px; }
+        .section h3 { background:#007BFF; color:white; padding:10px; }
+
+        input, select {
+            width:100%;
+            padding:8px;
+            margin:5px 0;
+        }
+
+        button {
+            background:green;
+            color:white;
+            padding:10px;
+            width:100%;
+            border:none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Add New Member</h2>
+
+<form method="POST">
+
+<!-- PERSONAL -->
+<div class="section">
+<h3>Personal Identification</h3>
+
+<input name="name" placeholder="Full Name" required>
+<input name="id_number" placeholder="Identity Card Number" required>
+<input type="date" name="birthdate">
+<input name="phone" placeholder="Phone Number">
+
+<select name="gender">
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<select name="marital_status">
+<option>Single</option>
+<option>Married</option>
+</select>
+
+<input name="parents" placeholder="Parent Name (if single)">
+</div>
+
+<!-- LOCATION -->
+<div class="section">
+<h3>Location Details</h3>
+
+<input name="country" value="Rwanda">
+<input name="province" value="Kigali">
+
+<select name="district">
+<option>Kicukiro</option>
+<option>Gasabo</option>
+<option>Nyarugenge</option>
+</select>
+
+<input name="sector" placeholder="Sector">
+<input name="cell" placeholder="Cell">
+<input name="village" placeholder="Village">
+</div>
+
+<!-- CHURCH -->
+<div class="section">
+<h3>Church Responsibilities</h3>
+
+<select name="role">
+<option>Christian</option>
+<option>Choir Member</option>
+<option>Choir Committee Member</option>
+<option>COGEE MEMBER</option>
+</select>
+
+<select name="baptized">
+<option>Yes</option>
+<option>No</option>
+</select>
+
+<select name="itsinda">
+<option>Abanaziri</option>
+<option>Abanarada</option>
+<option>Abisiraheli</option>
+<option>Abayosefu</option>
+<option>Modal village</option>
+<option>Abaleweli</option>
+<option>Ababenyamini</option>
+<option>Abaheburayo</option>
+<option>Abagidiyoni</option>
+</select>
+
+</div>
+
+<button type="submit">Save Member</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

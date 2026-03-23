@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Member</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .container {
+            width: 70%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .section h3 {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            background: green;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Edit Member</h2>
+
+<form method="POST">
+
+<!-- PERSONAL -->
+<div class="section">
+<h3>Personal Identification</h3>
+
+<input name="name" value="{{ member.name }}" placeholder="Name">
+<input name="id_number" value="{{ member.id_number }}" placeholder="ID Number">
+<input type="date" name="birthdate" value="{{ member.birthdate }}">
+<input name="phone" value="{{ member.phone }}" placeholder="Phone">
+
+<select name="gender">
+<option value="Male" {% if member.gender=='Male' %}selected{% endif %}>Male</option>
+<option value="Female" {% if member.gender=='Female' %}selected{% endif %}>Female</option>
+</select>
+
+<select name="marital_status">
+<option value="Single" {% if member.marital_status=='Single' %}selected{% endif %}>Single</option>
+<option value="Married" {% if member.marital_status=='Married' %}selected{% endif %}>Married</option>
+</select>
+
+<input name="parents" value="{{ member.parents }}" placeholder="Parent Name">
+
+</div>
+
+<!-- LOCATION -->
+<div class="section">
+<h3>Location Details</h3>
+
+<input name="country" value="{{ member.country }}">
+<input name="province" value="{{ member.province }}">
+<input name="district" value="{{ member.district }}">
+<input name="sector" value="{{ member.sector }}">
+<input name="cell" value="{{ member.cell }}">
+<input name="village" value="{{ member.village }}">
+
+</div>
+
+<!-- CHURCH -->
+<div class="section">
+<h3>Church Responsibilities</h3>
+
+<input name="role" value="{{ member.role }}">
+
+<select name="baptized">
+<option value="Yes" {% if member.baptized=='Yes' %}selected{% endif %}>Yes</option>
+<option value="No" {% if member.baptized=='No' %}selected{% endif %}>No</option>
+</select>
+
+<input name="itsinda" value="{{ member.itsinda }}">
+
+</div>
+
+<button type="submit">Update Member</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

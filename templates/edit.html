@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Member</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        form {
+            width: 40%;
+            margin: auto;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            background: green;
+            color: white;
+            padding: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Edit Member</h2>
+
+<form method="POST">
+
+    <input type="text" name="name" value="{{ member.name }}">
+
+    <input type="text" name="phone" value="{{ member.phone }}">
+
+    <select name="gender">
+        <option {{ 'selected' if member.gender=='Male' else '' }}>Male</option>
+        <option {{ 'selected' if member.gender=='Female' else '' }}>Female</option>
+    </select>
+
+    <input type="text" name="role" value="{{ member.role }}">
+
+    <input type="text" name="parents" value="{{ member.parents }}">
+
+    <input type="text" name="district" value="{{ member.district }}">
+
+    <select name="baptized">
+        <option {{ 'selected' if member.baptized=='Yes' else '' }}>Yes</option>
+        <option {{ 'selected' if member.baptized=='No' else '' }}>No</option>
+    </select>
+
+    <button type="submit">Update Member</button>
+
+</form>
+
+</body>
+</html>
