@@ -63,6 +63,9 @@ def add_member():
     return render_template('add_member.html')
 @app.route('/')
 def home():
+    return redirect('/members')
+@app.route('/')
+def home():
     return redirect(url_for('dashboard'))
 
 @app.route('/dashboard')
@@ -82,7 +85,6 @@ def view_member(id):
     member = conn.execute("SELECT * FROM members WHERE id=?", (id,)).fetchone()
     conn.close()
     return render_template('view_member.html', member=member)
-
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_member(id):
     # your edit code here
