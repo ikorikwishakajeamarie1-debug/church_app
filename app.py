@@ -65,7 +65,7 @@ def add_member():
 def home():
     return redirect('/members')
 @app.route('/')
-def home():
+def dashboard():
     return redirect(url_for('dashboard'))
 
 @app.route('/dashboard')
