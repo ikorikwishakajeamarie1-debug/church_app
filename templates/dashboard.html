@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Church Dashboard</title>
 
     <style>
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
         }
 
         .navbar {
@@ -14,43 +15,131 @@
             padding: 12px 20px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
             color: white;
             font-weight: bold;
+            font-size: 18px;
         }
 
         .menu a {
             color: white;
             margin-left: 15px;
             text-decoration: none;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 5px;
         }
 
         .menu a:hover {
             background-color: #0056b3;
         }
+
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .actions a {
+            margin-right: 8px;
+            text-decoration: none;
+            padding: 5px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+
+        .view { background-color: #17a2b8; }
+        .edit { background-color: #ffc107; color: black; }
+        .delete { background-color: #dc3545; }
     </style>
 </head>
 
 <body>
 
+<!-- NAVBAR -->
 <div class="navbar">
     <div class="logo">Church System</div>
 
     <div class="menu">
-        <a href="/dashboard" style="background:#0056b3;">Dashboard</a>
+        <a href="/">Dashboard</a>
         <a href="/members">Church Members</a>
-        <a href="/staff">Staff</a>
-        <a href="/infrastructure">Infrastructure</a>
-        <a href="/finance">Finance</a>
-        <a href="/newborn">Newborn</a>
+        <a href="/add_member">Add Member</a>
     </div>
 </div>
 
-<h2 style="text-align:center;">Dashboard Page</h2>
+<!-- MAIN CONTENT -->
+<div class="container">
+    <div class="card">
+
+        <h2>Dashboard</h2>
+
+        <a href="/add_member" class="btn">+ Add New Member</a>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for member in members %}
+            <tr>
+                <td>{{ member.id }}</td>
+                <td>{{ member.name }}</td>
+                <td>{{ member.phone }}</td>
+                <td>{{ member.gender }}</td>
+                <td>{{ member.role }}</td>
+                <td class="actions">
+                    <a href="/view/{{ member.id }}" class="view">View</a>
+                    <a href="/edit/{{ member.id }}" class="edit">Edit</a>
+                    <a href="/delete/{{ member.id }}" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+</div>
 
 </body>
 </html>

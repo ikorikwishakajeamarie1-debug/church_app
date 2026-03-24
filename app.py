@@ -1,187 +1,111 @@
-from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
 import os
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# -----------------------------
-# DATABASE PATH (IMPORTANT FOR RENDER)
-# -----------------------------
-DB_PATH = '/tmp/church.db'
+# ================= DATABASE CONFIG =================
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///local.db")
+
+# Fix for Render PostgreSQL URL
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# ================= MODEL =================
+class Member(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Personal Identification
+    full_name = db.Column(db.String(150))
+    national_id = db.Column(db.String(50))
+    phone = db.Column(db.String(50))
+    gender = db.Column(db.String(10))
+    marital_status = db.Column(db.String(20))
+    parent_name = db.Column(db.String(150))
+    dob = db.Column(db.String(20))
+
+    # Location Details
+    country = db.Column(db.String(50))
+    province = db.Column(db.String(50))
+    district = db.Column(db.String(50))
+    sector = db.Column(db.String(50))
+    cell = db.Column(db.String(50))
+    village = db.Column(db.String(50))
+
+    # Church Responsibilities
+    role = db.Column(db.String(100))
+    baptized = db.Column(db.String(10))
+    baptism_date = db.Column(db.String(20))
+    itsinda = db.Column(db.String(50))
+    status = db.Column(db.String(20))
+    deactivation_reason = db.Column(db.String(200))
 
 
-# -----------------------------
-# DATABASE CONNECTION
-# -----------------------------
-def get_db_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+# ================= ROUTES =================
 
-
-# -----------------------------
-# INITIALIZE DATABASE
-# -----------------------------
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS members (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            id_number TEXT,
-            birthdate TEXT,
-            phone TEXT,
-            gender TEXT,
-            marital_status TEXT,
-            country TEXT,
-            province TEXT,
-            district TEXT,
-            sector TEXT,
-            cell TEXT,
-            village TEXT,
-            role TEXT,
-            baptized TEXT,
-            itsinda TEXT
-        )
-    ''')
-    conn.close()
-
-init_db()
-
-
-# -----------------------------
-# HOME / DASHBOARD
-# -----------------------------
 @app.route('/')
 def home():
-    conn = get_db_connection()
-    members = conn.execute('SELECT * FROM members').fetchall()
-    conn.close()
-    return render_template('dashboard.html', members=members)
-
-
-# -----------------------------
-# MEMBERS LIST
-# -----------------------------
-@app.route('/members')
-def members():
-    conn = get_db_connection()
-    members = conn.execute('SELECT * FROM members').fetchall()
-    conn.close()
-    return render_template('members.html', members=members)
-
-
-# -----------------------------
-# ADD MEMBER
-# -----------------------------
-@app.route('/add_member', methods=['GET', 'POST'])
-def add_member():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        id_number = request.form.get('id_number')
-        birthdate = request.form.get('birthdate')
-        phone = request.form.get('phone')
-        gender = request.form.get('gender')
-        marital_status = request.form.get('marital_status')
-        country = request.form.get('country')
-        province = request.form.get('province')
-        district = request.form.get('district')
-        sector = request.form.get('sector')
-        cell = request.form.get('cell')
-        village = request.form.get('village')
-        role = request.form.get('role')
-        baptized = request.form.get('baptized')
-        itsinda = request.form.get('itsinda')
-
-        conn = get_db_connection()
-        conn.execute('''
-            INSERT INTO members (
-                name, id_number, birthdate, phone, gender, marital_status,
-                country, province, district, sector, cell, village,
-                role, baptized, itsinda
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            name, id_number, birthdate, phone, gender, marital_status,
-            country, province, district, sector, cell, village,
-            role, baptized, itsinda
-        ))
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for('members'))
-
-    return render_template('add_member.html')
-
-
-# -----------------------------
-# VIEW MEMBER
-# -----------------------------
-@app.route('/view/<int:id>')
-def view_member(id):
-    conn = get_db_connection()
-    member = conn.execute('SELECT * FROM members WHERE id=?', (id,)).fetchone()
-    conn.close()
-    return render_template('view_member.html', member=member)
-
-
-# -----------------------------
-# EDIT MEMBER
-# -----------------------------
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit_member(id):
-    conn = get_db_connection()
-    member = conn.execute('SELECT * FROM members WHERE id=?', (id,)).fetchone()
-
-    if request.method == 'POST':
-        conn.execute('''
-            UPDATE members SET
-                name=?, id_number=?, birthdate=?, phone=?, gender=?, marital_status=?,
-                country=?, province=?, district=?, sector=?, cell=?, village=?,
-                role=?, baptized=?, itsinda=?
-            WHERE id=?
-        ''', (
-            request.form.get('name'),
-            request.form.get('id_number'),
-            request.form.get('birthdate'),
-            request.form.get('phone'),
-            request.form.get('gender'),
-            request.form.get('marital_status'),
-            request.form.get('country'),
-            request.form.get('province'),
-            request.form.get('district'),
-            request.form.get('sector'),
-            request.form.get('cell'),
-            request.form.get('village'),
-            request.form.get('role'),
-            request.form.get('baptized'),
-            request.form.get('itsinda'),
-            id
-        ))
-
-        conn.commit()
-        conn.close()
-        return redirect(url_for('members'))
-
-    conn.close()
-    return render_template('edit_member.html', member=member)
-
-
-# -----------------------------
-# DELETE MEMBER
-# -----------------------------
-@app.route('/delete/<int:id>')
-def delete_member(id):
-    conn = get_db_connection()
-    conn.execute('DELETE FROM members WHERE id=?', (id,))
-    conn.commit()
-    conn.close()
     return redirect(url_for('members'))
 
 
-# -----------------------------
-# RUN APP (RENDER READY)
-# -----------------------------
+@app.route('/members')
+def members():
+    all_members = Member.query.all()
+    return render_template('members.html', members=all_members)
+
+
+@app.route('/add_member', methods=['POST'])
+def add_member():
+    try:
+        data = request.form
+
+        new_member = Member(
+            # Personal Identification
+            full_name=data.get('full_name'),
+            national_id=data.get('national_id'),
+            phone=data.get('phone'),
+            gender=data.get('gender'),
+            marital_status=data.get('marital_status'),
+            parent_name=data.get('parent_name'),
+            dob=data.get('dob'),
+
+            # Location
+            country=data.get('country'),
+            province=data.get('province'),
+            district=data.get('district'),
+            sector=data.get('sector'),
+            cell=data.get('cell'),
+            village=data.get('village'),
+
+            # Church
+            role=data.get('role'),
+            baptized=data.get('baptized'),
+            baptism_date=data.get('baptism_date'),
+            itsinda=data.get('itsinda'),
+            status=data.get('status'),
+            deactivation_reason=data.get('deactivation_reason')
+        )
+
+        db.session.add(new_member)
+        db.session.commit()
+
+        return redirect(url_for('members'))
+
+    except Exception as e:
+        print("ERROR:", e)
+        return f"Error occurred: {e}", 500
+
+
+# ================= INIT DB =================
+with app.app_context():
+    db.create_all()
+
+
+# ================= RUN APP =================
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True, use_reloader=False)
