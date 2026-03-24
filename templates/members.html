@@ -1,56 +1,71 @@
-<div style="background:#333; padding:10px;">
-    <a href="/" style="color:white; margin-right:15px;">Home</a>
-    <a href="/members" style="color:white; margin-right:15px;">Members</a>
-    <a href="/feedback" style="color:white;">Feedback</a>
-</div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Church Members</title>
+    <title>Church Data Management System</title>
 
     <style>
         body {
             font-family: Arial;
-            margin: 20px;
+            margin: 0;
         }
 
-        h2 {
-            text-align: center;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
-
-        .section {
-            border: 1px solid #ccc;
+        /* Header */
+        .header {
+            background-color: #2c3e50;
+            color: white;
             padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
         }
 
-        .section h3 {
-            margin-top: 0;
+        /* Navbar */
+        .navbar {
+            background-color: #34495e;
+            overflow: hidden;
         }
 
-        .form-group {
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
+        .navbar a {
+            float: left;
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
         }
 
-        input, select {
-            padding: 8px;
-            border-radius: 5px;
+        .navbar a:hover {
+            background-color: #1abc9c;
+        }
+
+        /* Container */
+        .container {
+            padding: 20px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
             border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
         }
 
         .btn {
             background-color: green;
             color: white;
-            padding: 10px;
+            padding: 8px 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -59,131 +74,115 @@
         .btn:hover {
             background-color: darkgreen;
         }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
 <body>
 
-<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        Church Data Management System
+    </div>
 
-    <h2>Church Members Management</h2>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <a href="#">Dashboard</a>
+        <a href="/members">Church Members</a>
+        <a href="#">Staff</a>
+        <a href="#">Infrastructure</a>
+        <a href="#">Finance</a>
+        <a href="#">Newborn</a>
+    </div>
 
-    <form method="POST" action="{{ url_for('add_member') }}">
+    <!-- MAIN CONTENT -->
+    <div class="container">
 
-        <!-- ================= PERSONAL IDENTIFICATION ================= -->
-        <div class="section">
-            <h3>Personal Identification</h3>
+        <div class="top-bar">
+            <h2>Church Members</h2>
+            <button class="btn" onclick="document.getElementById('formSection').scrollIntoView();">
+                Add Member
+            </button>
+        </div>
 
-            <div class="form-group">
-                <label>Names</label>
-                <input type="text" name="full_name" required>
-            </div>
+        <!-- MEMBERS TABLE -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Names</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>District</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Baptized</th>
+                </tr>
+            </thead>
 
-            <div class="form-group">
-                <label>ID Number</label>
-                <input type="text" name="national_id">
-            </div>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td>{{ member.id }}</td>
+                    <td>{{ member.full_name }}</td>
+                    <td>{{ member.phone }}</td>
+                    <td>{{ member.gender }}</td>
+                    <td>{{ member.district }}</td>
+                    <td>{{ member.role }}</td>
+                    <td>{{ member.status }}</td>
+                    <td>{{ member.baptized }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input type="text" name="phone">
-            </div>
+        <!-- ADD MEMBER FORM SECTION -->
+        <div id="formSection" style="margin-top:50px;">
+            <h2>Add Member</h2>
 
-            <div class="form-group">
-                <label>Gender</label>
+            <form method="POST" action="/add_member">
+
+                <input type="text" name="full_name" placeholder="Full Name" required><br><br>
+                <input type="text" name="national_id" placeholder="ID Number"><br><br>
+                <input type="text" name="phone" placeholder="Phone"><br><br>
+
                 <select name="gender">
                     <option>Male</option>
                     <option>Female</option>
-                </select>
-            </div>
+                </select><br><br>
 
-            <div class="form-group">
-                <label>Marital Status</label>
-                <select name="marital_status" id="marital_status" onchange="toggleParentName()">
-                    <option>Single</option>
-                    <option>Married</option>
-                </select>
-            </div>
+                <input type="date" name="dob"><br><br>
 
-            <div class="form-group" id="parent_name_field" style="display:none;">
-                <label>Parent Name (for single)</label>
-                <input type="text" name="parent_name">
-            </div>
-
-            <div class="form-group">
-                <label>Birthdate</label>
-                <input type="date" name="dob">
-            </div>
-        </div>
-
-        <!-- ================= LOCATION DETAILS ================= -->
-        <div class="section">
-            <h3>Location Details</h3>
-
-            <div class="form-group">
-                <label>Country</label>
-                <input type="text" name="country" value="Rwanda" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>Province</label>
-                <input type="text" name="province" value="Kigali" readonly>
-            </div>
-
-            <div class="form-group">
-                <label>District</label>
                 <select name="district">
                     <option>Kicukiro</option>
                     <option>Nyarugenge</option>
                     <option>Gasabo</option>
-                </select>
-            </div>
+                </select><br><br>
 
-            <div class="form-group">
-                <label>Sector</label>
-                <input type="text" name="sector">
-            </div>
+                <input type="text" name="sector" placeholder="Sector"><br><br>
+                <input type="text" name="cell" placeholder="Cell"><br><br>
+                <input type="text" name="village" placeholder="Village"><br><br>
 
-            <div class="form-group">
-                <label>Cell</label>
-                <input type="text" name="cell">
-            </div>
-
-            <div class="form-group">
-                <label>Village</label>
-                <input type="text" name="village">
-            </div>
-        </div>
-
-        <!-- ================= CHURCH RESPONSIBILITIES ================= -->
-        <div class="section">
-            <h3>Church Responsibilities</h3>
-
-            <div class="form-group">
-                <label>Role</label>
                 <select name="role">
                     <option>Christian</option>
                     <option>Choir Member</option>
                     <option>Choir Committee Member</option>
                     <option>COGEE MEMBER</option>
-                </select>
-            </div>
+                </select><br><br>
 
-            <div class="form-group">
-                <label>Baptized</label>
                 <select name="baptized">
                     <option>Yes</option>
                     <option>No</option>
-                </select>
-            </div>
+                </select><br><br>
 
-            <div class="form-group">
-                <label>Date of Baptism</label>
-                <input type="date" name="baptism_date">
-            </div>
+                <input type="date" name="baptism_date"><br><br>
 
-            <div class="form-group">
-                <label>Itsinda</label>
                 <select name="itsinda">
                     <option>Abanaziri</option>
                     <option>Abanarada</option>
@@ -194,59 +193,26 @@
                     <option>Ababenyamini</option>
                     <option>Abaheburayo</option>
                     <option>Abagidiyoni</option>
-                </select>
-            </div>
+                </select><br><br>
 
-            <div class="form-group">
-                <label>Status</label>
-                <select name="status" id="status" onchange="toggleReason()">
+                <select name="status">
                     <option>Active</option>
                     <option>Deactive</option>
-                </select>
-            </div>
+                </select><br><br>
 
-            <div class="form-group" id="reason_field" style="display:none;">
-                <label>Reason for Deactivation</label>
                 <select name="deactivation_reason">
                     <option>Change the church</option>
                     <option>Change the location</option>
-                    <option>Last 1 year without participating</option>
-                    <option>Abusing internal regulations</option>
-                </select>
-            </div>
+                    <option>Last 1 year without participating in church activities</option>
+                    <option>Abusing internal regulations of the church</option>
+                </select><br><br>
 
+                <button class="btn" type="submit">Save Member</button>
+
+            </form>
         </div>
 
-        <button type="submit" class="btn">Add Member</button>
-
-    </form>
-
-</div>
-
-<!-- ================= SCRIPT ================= -->
-<script>
-function toggleParentName() {
-    let maritalStatus = document.getElementById("marital_status").value;
-    let parentField = document.getElementById("parent_name_field");
-
-    if (maritalStatus === "Single") {
-        parentField.style.display = "block";
-    } else {
-        parentField.style.display = "none";
-    }
-}
-
-function toggleReason() {
-    let status = document.getElementById("status").value;
-    let reasonField = document.getElementById("reason_field");
-
-    if (status === "Deactive") {
-        reasonField.style.display = "block";
-    } else {
-        reasonField.style.display = "none";
-    }
-}
-</script>
+    </div>
 
 </body>
 </html>
