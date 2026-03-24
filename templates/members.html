@@ -112,35 +112,38 @@
         </div>
 
         <!-- MEMBERS TABLE -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Names</th>
-                    <th>Phone</th>
-                    <th>Gender</th>
-                    <th>District</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Baptized</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for member in members %}
-                <tr>
-                    <td>{{ member.id }}</td>
-                    <td>{{ member.full_name }}</td>
-                    <td>{{ member.phone }}</td>
-                    <td>{{ member.gender }}</td>
-                    <td>{{ member.district }}</td>
-                    <td>{{ member.role }}</td>
-                    <td>{{ member.status }}</td>
-                    <td>{{ member.baptized }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+       <table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Names</th>
+            <th>ID Number</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td>{{ member.id }}</td>
+            <td>{{ member.names }}</td>
+            <td>{{ member.id_number }}</td>
+            <td>{{ member.phone }}</td>
+            <td>{{ member.gender }}</td>
+            <td>{{ member.role }}</td>
+            <td>{{ member.status }}</td>
+            <td>
+                <a href="/view/{{ member.id }}">View</a> |
+                <a href="/edit/{{ member.id }}">Edit</a> |
+                <a href="/delete/{{ member.id }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
         <!-- ADD MEMBER FORM SECTION -->
         <div id="formSection" style="margin-top:50px;">

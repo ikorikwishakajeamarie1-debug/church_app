@@ -57,7 +57,10 @@ def home():
 def members():
     all_members = Member.query.all()
     return render_template('members.html', members=all_members)
-
+@app.route('/view/<int:id>')
+def view_member(id):
+    member = Member.query.get_or_404(id)
+    return render_template('view_member.html', member=member)
 
 @app.route('/add_member', methods=['POST'])
 def add_member():
@@ -65,6 +68,7 @@ def add_member():
         data = request.form
 
         new_member = Member(
+
             # Personal Identification
             full_name=data.get('full_name'),
             national_id=data.get('national_id'),
