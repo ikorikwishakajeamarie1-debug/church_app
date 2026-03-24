@@ -56,7 +56,7 @@ def home():
 @app.route('/members')
 def members():
     all_members = Member.query.all()
-    return render_template('home.html', members=all_members)
+    return render_template('members.html', members=all_members)
 
 
 @app.route('/add_member', methods=['POST'])
