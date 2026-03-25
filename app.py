@@ -161,24 +161,50 @@ def staff():
     conn.close()
 
     return render_template('staff.html', staff=staff)
+@app.route('/delete_staff/<int:id>')
+def delete_staff(id):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM staff WHERE id=%s", (id,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect('/staff')
+@app.route('/edit_staff/<int:id>')
+def edit_staff(id):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("SELECT * FROM staff WHERE id=%s", (id,))
+    staff = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return render_template('edit_staff.html', staff=staff)
 # ================= ADD STAFF =================
-@app.route('/add_staff', methods=['POST'])
-def add_staff():
+@app.route('/update_staff/<int:id>', methods=['POST'])
+def update_staff(id):
     data = request.form
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute('''
-    INSERT INTO staff (names, id_number, gender, phone, role, status)
-    VALUES (%s,%s,%s,%s,%s,%s)
+        UPDATE staff
+        SET names=%s, id_number=%s, gender=%s, phone=%s, role=%s, status=%s
+        WHERE id=%s
     ''', (
         data.get('names'),
         data.get('id_number'),
         data.get('gender'),
         data.get('phone'),
         data.get('role'),
-        data.get('status')
+        data.get('status'),
+        id
     ))
 
     conn.commit()

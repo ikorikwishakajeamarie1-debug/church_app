@@ -1,0 +1,12 @@
+<h2>Edit Staff</h2>
+
+<form method="POST" action="/update_staff/{{ staff.id }}">
+    <input type="text" name="names" value="{{ staff.names }}" placeholder="Names"><br>
+    <input type="text" name="id_number" value="{{ staff.id_number }}" placeholder="ID Number"><br>
+    <input type="text" name="gender" value="{{ staff.gender }}" placeholder="Gender"><br>
+    <input type="text" name="phone" value="{{ staff.phone }}" placeholder="Phone"><br>
+    <input type="text" name="role" value="{{ staff.role }}" placeholder="Role"><br>
+    <input type="text" name="status" value="{{ staff.status }}" placeholder="Status"><br>
+
+    <button type="submit">Update</button>
+</form>
