@@ -4,93 +4,95 @@
     <title>Staff</title>
 
     <style>
-        body { font-family: Arial; margin: 0; background: #f4f6f9; }
-
-        .title {
-            background: #1f2d3d;
-            color: white;
-            text-align: center;
-            padding: 15px;
+        body {
+            font-family: Arial;
+            margin: 20px;
         }
-
-        .menu {
-            background: #2c3e50;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .menu a {
-            color: white;
-            margin: 10px;
-            text-decoration: none;
-        }
-
-        .container { padding: 20px; }
 
         table {
-            width: 100%;
             border-collapse: collapse;
-            background: white;
+            width: 100%;
+            margin-top: 20px;
         }
 
         th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
         }
 
         th {
-            background: #34495e;
-            color: white;
+            background-color: #f2f2f2;
+        }
+
+        #staffForm {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            width: 300px;
+            background-color: #fafafa;
         }
 
         input, select {
             width: 100%;
-            padding: 8px;
             margin-bottom: 10px;
+            padding: 6px;
         }
 
-        .form-section { display: none; }
-
-        .btn {
-            padding: 8px;
-            color: white;
-            border: none;
-            cursor: pointer;
+        button {
+            padding: 8px 12px;
+            margin-top: 5px;
         }
-
-        .add { background: green; }
     </style>
-
-    <script>
-        function showForm() {
-            document.getElementById("form").style.display = "block";
-            document.getElementById("table").style.display = "none";
-        }
-
-        function showTable() {
-            document.getElementById("form").style.display = "none";
-            document.getElementById("table").style.display = "block";
-        }
-    </script>
 </head>
 
 <body>
 
-<div class="title">Church Data Management System</div>
+<h2>Staff Management</h2>
 
-<div class="menu">
-    <a href="/">Dashboard</a>
-    <a href="/members">Church Members</a>
-    <a href="/staff">Staff</a>
+<!-- Add Staff Button -->
+<button onclick="showForm()">+ Add Staff</button>
+
+<!-- Hidden Form -->
+<div id="staffForm">
+    <h3>Add Staff</h3>
+
+    <form action="/add_staff" method="POST">
+
+        <input type="text" name="names" placeholder="Names" required>
+
+        <input type="text" name="id_number" placeholder="ID Number" required>
+
+        <select name="gender" required>
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+
+        <input type="text" name="phone" placeholder="Phone">
+
+        <select name="role">
+            <option>Pastor</option>
+            <option>Group leader</option>
+            <option>President of choir</option>
+            <option>President of COGEE</option>
+        </select>
+
+        <select name="status">
+            <option>Existing</option>
+            <option>New</option>
+            <option>Deactive</option>
+        </select>
+
+        <button type="submit">Save Staff</button>
+        <button type="button" onclick="hideForm()">Cancel</button>
+
+    </form>
 </div>
 
-<div class="container">
-
-    <!-- TABLE -->
-    <div id="table">
-        <button class="btn add" onclick="showForm()">+ Add Staff</button>
-
-        <table border="1">
+<!-- Staff Table -->
+<table>
     <thead>
         <tr>
             <th>ID</th>
@@ -100,7 +102,7 @@
             <th>Phone</th>
             <th>Role</th>
             <th>Status</th>
-            <th>Action</th> <!-- ✅ NEW COLUMN -->
+            <th>Action</th>
         </tr>
     </thead>
 
@@ -116,53 +118,24 @@
             <td>{{ s.status }}</td>
 
             <td>
-                <!-- View/Edit/Delete buttons -->
                 <a href="/edit_staff/{{ s.id }}">Edit</a> |
-                <a href="/delete_staff/{{ s.id }}" onclick="return confirm('Delete this staff?')">Delete</a>
+                <a href="/delete_staff/{{ s.id }}" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-    <!-- FORM -->
-    <div id="form" class="form-section">
 
-        <h2>Add Staff</h2>
+<!-- JavaScript -->
+<script>
+function showForm() {
+    document.getElementById("staffForm").style.display = "block";
+}
 
-        <form method="POST" action="/add_staff">
-
-            <input type="text" name="names" placeholder="Names" required>
-            <input type="text" name="id_number" placeholder="ID Number">
-
-            <select name="gender">
-                <option>Male</option>
-                <option>Female</option>
-            </select>
-
-            <input type="text" name="phone" placeholder="Phone">
-
-            <select name="status">
-                <option>Existing</option>
-                <option>New</option>
-                <option>Deactive</option>
-            </select>
-
-            <select name="role">
-                <option>Pastor</option>
-                <option>Group Leader</option>
-                <option>President of Choir</option>
-                <option>President of COGEE</option>
-            </select>
-
-            <button type="submit" class="btn add">Save</button>
-        </form>
-
-        <br>
-        <button onclick="showTable()">⬅ Back</button>
-
-    </div>
-
-</div>
+function hideForm() {
+    document.getElementById("staffForm").style.display = "none";
+}
+</script>
 
 </body>
 </html>
