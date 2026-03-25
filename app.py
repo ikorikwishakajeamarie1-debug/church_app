@@ -85,7 +85,7 @@ def add_member():
     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ''', (
         val(data, "member_id", 0),
-        val(data, "names", "Unknown"),
+        val(data, "names", ),
         val(data, "id_number"),
         val(data, "phone"),
         val(data, "birthdate"),
@@ -113,6 +113,8 @@ def add_member():
     return redirect(url_for('members'))
 
 # ================= VIEW MEMBER =================
+from psycopg2.extras import RealDictCursor
+
 @app.route('/view_member/<int:id>')
 def view_member(id):
     conn = get_db()

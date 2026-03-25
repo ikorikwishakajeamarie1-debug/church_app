@@ -1,106 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Member Profile</title>
-
+    <title>View Member</title>
     <style>
         body {
             font-family: Arial;
-            background: #f4f6f9;
-        }
-
-        .container {
-            width: 70%;
-            margin: 30px auto;
-            background: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
         }
-
+        .card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+        }
         h2 {
-            text-align: center;
+            margin-bottom: 20px;
         }
-
-        .section {
-            margin-top: 20px;
-        }
-
-        .section h3 {
-            background: #007BFF;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .row {
-            margin: 8px 0;
-        }
-
-        .label {
-            font-weight: bold;
-        }
-
-        .back-btn {
-            display: block;
-            width: 150px;
-            margin: 20px auto;
-            text-align: center;
-            padding: 10px;
-            background: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
+        p {
+            margin: 5px 0;
         }
     </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="card">
+    <h2>Member Details</h2>
 
-<h2>Member Profile</h2>
+    <p><strong>Member ID:</strong> {{ member['member_id'] }}</p>
 
-<!-- PERSONAL -->
-<div class="section">
-<h3>Personal Identification</h3>
+    <p><strong>Name:</strong> {{ member['names'] }}</p>
 
-<div class="row"><span class="label">Name:</span> {{ member.name }}</div>
-<div class="row"><span class="label">ID Number:</span> {{ member.id_number }}</div>
-<div class="row"><span class="label">Birthdate:</span> {{ member.birthdate }}</div>
-<div class="row"><span class="label">Phone:</span> {{ member.phone }}</div>
-<div class="row"><span class="label">Gender:</span> {{ member.gender }}</div>
-<div class="row"><span class="label">Marital Status:</span> {{ member.marital_status }}</div>
-<div class="row"><span class="label">Parent Name:</span> {{ member.parents }}</div>
+    <p><strong>ID Number:</strong> {{ member['id_number'] }}</p>
 
-</div>
+    <p><strong>Phone:</strong> {{ member['phone'] }}</p>
 
-<!-- LOCATION -->
-<div class="section">
-<h3>Location Details</h3>
+    <p><strong>Gender:</strong> {{ member['gender'] }}</p>
 
-<div class="row"><span class="label">Country:</span> {{ member.country }}</div>
-<div class="row"><span class="label">Province:</span> {{ member.province }}</div>
-<div class="row"><span class="label">District:</span> {{ member.district }}</div>
-<div class="row"><span class="label">Sector:</span> {{ member.sector }}</div>
-<div class="row"><span class="label">Cell:</span> {{ member.cell }}</div>
-<div class="row"><span class="label">Village:</span> {{ member.village }}</div>
+    <p><strong>Marital Status:</strong> {{ member['marital_status'] }}</p>
 
-</div>
+    <hr>
 
-<!-- CHURCH -->
-<div class="section">
-<h3>Church Responsibilities</h3>
+    <p><strong>Location:</strong></p>
+    <p>{{ member['country'] }}, {{ member['province'] }}, {{ member['district'] }}</p>
+    <p>{{ member['sector'] }}, {{ member['cell'] }}, {{ member['village'] }}</p>
 
-<div class="row"><span class="label">Role:</span> {{ member.role }}</div>
-<div class="row"><span class="label">Baptized:</span> {{ member.baptized }}</div>
-<div class="row"><span class="label">Itsinda:</span> {{ member.itsinda }}</div>
-<div class="row"><span class="label">Status:</span> {{ member.status }}</div> 
-{% if member['status'] == 'Deactive' %} <div class="row"><span class="label">Reason:</span> 
-    {{ member.reason }}</div> {% endif %}
+    <hr>
 
-<a href="/members" class="back-btn">Back</a>
+    <p><strong>Role:</strong> {{ member['role'] }}</p>
 
+    <p><strong>Baptized:</strong> {{ member['baptized'] }}</p>
+
+    <p><strong>Baptism Date:</strong> {{ member['baptism_date'] }}</p>
+
+    <p><strong>Itsinda:</strong> {{ member['itsinda'] }}</p>
+
+    <hr>
+
+    <p><strong>Status:</strong> {{ member['status'] }}</p>
+
+    {% if member['status'] == 'Deactive' %}
+        <p><strong>Reason:</strong> {{ member['reason'] }}</p>
+    {% endif %}
+
+    <br>
+    <a href="/members">⬅ Back</a>
 </div>
 
 </body>
