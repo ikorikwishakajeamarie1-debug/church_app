@@ -1,4 +1,3 @@
-<h1 style="color:red;">UI UPDATED SUCCESSFULLY</h1>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,161 +5,93 @@
     <title>Church Data Management System</title>
 
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-        }
+        body { font-family: Arial; margin: 0; }
 
-        /* ===== TITLE BAR ===== */
-        .title-bar {
-            background-color: #1f2d3d;
+        .navbar {
+            background: #2c3e50;
             color: white;
-            text-align: center;
             padding: 15px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        /* ===== MENU BAR ===== */
-        .menu-bar {
-            background-color: #2c3e50;
-            padding: 10px;
             display: flex;
-            justify-content: center;
-            gap: 25px;
+            justify-content: space-between;
         }
 
-        .menu-bar a {
+        .menu a {
             color: white;
+            margin-right: 15px;
             text-decoration: none;
-            font-weight: bold;
-            padding: 8px 12px;
-            border-radius: 5px;
         }
 
-        .menu-bar a:hover {
-            background-color: #1abc9c;
-        }
-
-        /* ===== SEARCH BAR ===== */
-        .search-bar {
-            padding: 15px;
-            text-align: center;
-            background-color: #ffffff;
-        }
-
-        .search-bar input, .search-bar select {
-            padding: 8px;
-            margin: 5px;
-        }
-
-        /* ===== CONTAINER ===== */
         .container {
             padding: 20px;
         }
 
-        /* ===== TABLE ===== */
+        .hidden {
+            display: none;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            margin-top: 15px;
         }
 
         th, td {
-            padding: 10px;
             border: 1px solid #ddd;
-            text-align: left;
+            padding: 8px;
         }
 
         th {
-            background-color: #34495e;
-            color: white;
+            background: #f4f4f4;
         }
 
-        /* ===== BUTTONS ===== */
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
         .btn {
-            padding: 6px 10px;
-            border-radius: 4px;
+            padding: 10px;
+            background: green;
             color: white;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .view { background-color: #3498db; }
-        .delete { background-color: #e74c3c; }
-
-        .add-btn {
-            background-color: #2ecc71;
-            padding: 10px 15px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-            margin-bottom: 15px;
+            border: none;
+            cursor: pointer;
         }
     </style>
+
+    <script>
+        function showAddForm() {
+            document.getElementById("formSection").classList.remove("hidden");
+            document.getElementById("tableSection").classList.add("hidden");
+        }
+
+        function showTable() {
+            document.getElementById("formSection").classList.add("hidden");
+            document.getElementById("tableSection").classList.remove("hidden");
+        }
+    </script>
 </head>
 
 <body>
 
-    <!-- TITLE -->
-    <div class="title-bar">
-        Church Data Management System
+<!-- NAVBAR -->
+<div class="navbar">
+    <div><strong>Church Data Management System</strong></div>
+    <div class="menu">
+        <a href="#" onclick="showTable()">Members</a>
+        <a href="#" onclick="showAddForm()">+ Add Member</a>
     </div>
+</div>
 
-    <!-- MENU BAR -->
-    <div class="menu-bar">
-        <a href="/">Dashboard</a>
-        <a href="/members">Church Members</a>
-        <a href="#">Staff</a>
-        <a href="#">Infrastructure</a>
-        <a href="#">Finance</a>
-        <a href="#">Newborn</a>
-    </div>
+<div class="container">
 
-    <!-- SEARCH / FILTER -->
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search by name...">
-        
-        <select id="statusFilter">
-            <option value="">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Deactive">Deactive</option>
-        </select>
-    </div>
+    <!-- TABLE SECTION -->
+    <div id="tableSection">
+        <h2>Members List</h2>
 
-    <!-- CONTENT -->
-    <div class="container">
+        <!-- Search -->
+        <input type="text" placeholder="Search member..." onkeyup="searchTable()" id="searchInput">
 
-        <a href="#" class="add-btn" onclick="document.getElementById('form').style.display='block'">
-            + Add Member
-        </a>
-
-        <!-- ADD MEMBER FORM -->
-        <div id="form" style="display:none; margin-bottom:20px;">
-            <form action="/add_member" method="POST">
-
-                <input type="text" name="names" placeholder="Names" required><br><br>
-                <input type="text" name="id_number" placeholder="ID Number"><br><br>
-                <input type="text" name="phone" placeholder="Phone"><br><br>
-
-                <select name="gender">
-                    <option value="">Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                </select><br><br>
-
-                <select name="status">
-                    <option value="Active">Active</option>
-                    <option value="Deactive">Deactive</option>
-                </select><br><br>
-
-                <button type="submit">Save Member</button>
-            </form>
-        </div>
-
-        <!-- TABLE -->
         <table id="membersTable">
             <tr>
                 <th>ID</th>
@@ -172,50 +103,100 @@
                 <th>Action</th>
             </tr>
 
-            {% for m in members %}
+            {% for member in members %}
             <tr>
-                <td>{{ m.member_id }}</td>
-                <td class="name">{{ m.names }}</td>
-                <td>{{ m.id_number }}</td>
-                <td>{{ m.gender }}</td>
-                <td>{{ m.phone }}</td>
-                <td class="status">{{ m.status }}</td>
+                <td>{{ member['id'] }}</td>
+                <td>{{ member['names'] }}</td>
+                <td>{{ member['id_number'] }}</td>
+                <td>{{ member['gender'] }}</td>
+                <td>{{ member['phone'] }}</td>
+                <td>{{ member['status'] }}</td>
                 <td>
-                    <a href="/view_member/{{ m.id }}" class="btn view">View</a>
-                    <a href="/delete_member/{{ m.id }}" class="btn delete">Delete</a>
+                    <a href="/view_member/{{ member['id'] }}">View</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
-
     </div>
 
-    <!-- SEARCH SCRIPT -->
-    <script>
-        const searchInput = document.getElementById("searchInput");
-        const statusFilter = document.getElementById("statusFilter");
-        const table = document.getElementById("membersTable");
+    <!-- ADD MEMBER FORM -->
+    <div id="formSection" class="hidden">
+        <h2>Add New Member</h2>
 
-        function filterTable() {
-            const search = searchInput.value.toLowerCase();
-            const status = statusFilter.value;
+        <form action="/add_member" method="POST">
 
-            const rows = table.getElementsByTagName("tr");
+            <h3>Personal Identification</h3>
 
-            for (let i = 1; i < rows.length; i++) {
-                let name = rows[i].getElementsByClassName("name")[0].innerText.toLowerCase();
-                let rowStatus = rows[i].getElementsByClassName("status")[0].innerText;
+            <input type="text" name="names" placeholder="Names" required>
+            <input type="text" name="id_number" placeholder="ID Number">
+            <input type="text" name="phone" placeholder="Phone Number">
 
-                let matchSearch = name.includes(search);
-                let matchStatus = status === "" || rowStatus === status;
+            <label>Birthdate</label>
+            <input type="date" name="birthdate">
 
-                rows[i].style.display = (matchSearch && matchStatus) ? "" : "none";
-            }
-        }
+            <label>Gender</label>
+            <select name="gender">
+                <option>Male</option>
+                <option>Female</option>
+            </select>
 
-        searchInput.addEventListener("keyup", filterTable);
-        statusFilter.addEventListener("change", filterTable);
-    </script>
+            <label>Marital Status</label>
+            <select name="marital_status">
+                <option>Single</option>
+                <option>Married</option>
+                <option>Widow</option>
+                <option>Widower</option>
+                <option>Divorced</option>
+            </select>
+
+            <h3>Location</h3>
+            <input type="text" name="country" value="Rwanda">
+            <input type="text" name="province" value="Kigali">
+
+            <select name="district">
+                <option>Kicukiro</option>
+                <option>Nyarugenge</option>
+                <option>Gasabo</option>
+            </select>
+
+            <input type="text" name="sector">
+            <input type="text" name="cell">
+            <input type="text" name="village">
+
+            <h3>Church Info</h3>
+
+            <select name="role">
+                <option>Christian</option>
+                <option>Choir member</option>
+                <option>Choir committee</option>
+                <option>COGEE member</option>
+            </select>
+
+            <select name="baptized">
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+
+            <input type="date" name="baptism_date">
+
+            <select name="itsinda">
+                <option>Abanaziri</option>
+                <option>Abanarada</option>
+                <option>Abisiraheli</option>
+            </select>
+
+            <select name="status">
+                <option>Active</option>
+                <option>Deactive</option>
+            </select>
+
+            <input type="text" name="reason" placeholder="Reason if deactivated">
+
+            <button type="submit" class="btn">Save Member</button>
+        </form>
+    </div>
+
+</div>
 
 </body>
 </html>
