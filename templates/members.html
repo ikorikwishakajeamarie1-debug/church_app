@@ -53,6 +53,9 @@ th, td {
 <div class="form-container" id="memberForm">
 
 <form method="POST" action="/add_member">
+    <input type="text" name="names" required>
+    ...
+</form>
 
 <h3>1. Personal Identification</h3>
 
@@ -60,7 +63,7 @@ th, td {
 <input type="number" name="member_id">
 
 <label>Names</label>
-<input type="text" name="names">
+<input type="text" name="names" required>
 
 <label>ID Number</label>
 <input type="text" name="id_number">
@@ -147,14 +150,14 @@ th, td {
 </select>
 
 <label>Status</label>
-<select name="status" onchange="toggleReason(this)">
+<select name="status" required onchange="toggleReason(this)">
     <option>Active</option>
     <option value="Deactive">Deactive</option>
 </select>
 
 <div id="reasonField" style="display:none;">
     <label>Reason</label>
-    <select name="reason">
+    <select name="reason"> required>
         <option>Changed Location</option>
         <option>Changed Church</option>
         <option>Abusing Church Rules</option>
