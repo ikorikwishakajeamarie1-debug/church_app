@@ -1,64 +1,52 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
 
-# ================= DATABASE =================
+# ================= DATABASE CONNECTION =================
 def get_db():
-    conn = sqlite3.connect("church.db")
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
     return conn
 
-# ================= INIT =================
+# ================= INIT DATABASE =================
 def init_db():
     conn = get_db()
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS members (
-            id INTEGER PRIMARY KEY AUTOINCREMENT
-        )
+    cur = conn.cursor()
+
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS members (
+        id SERIAL PRIMARY KEY,
+        member_id INTEGER,
+        names TEXT,
+        id_number TEXT,
+        phone TEXT,
+        birthdate TEXT,
+        gender TEXT,
+        marital_status TEXT,
+        parent_names TEXT,
+        country TEXT,
+        province TEXT,
+        district TEXT,
+        sector TEXT,
+        cell TEXT,
+        village TEXT,
+        role TEXT,
+        baptized TEXT,
+        baptism_date TEXT,
+        itsinda TEXT,
+        status TEXT,
+        reason TEXT
+    )
     ''')
-    conn.commit()
-    conn.close()
-
-# ================= MIGRATION =================
-def update_db():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    columns = [
-        ("member_id", "INTEGER"),
-        ("names", "TEXT"),
-        ("id_number", "TEXT"),
-        ("phone", "TEXT"),
-        ("birthdate", "TEXT"),
-        ("gender", "TEXT"),
-        ("marital_status", "TEXT"),
-        ("parent_names", "TEXT"),
-        ("country", "TEXT"),
-        ("province", "TEXT"),
-        ("district", "TEXT"),
-        ("sector", "TEXT"),
-        ("cell", "TEXT"),
-        ("village", "TEXT"),
-        ("role", "TEXT"),
-        ("baptized", "TEXT"),
-        ("baptism_date", "TEXT"),
-        ("itsinda", "TEXT"),
-        ("status", "TEXT"),
-        ("reason", "TEXT")
-    ]
-
-    for col, typ in columns:
-        try:
-            cursor.execute(f"ALTER TABLE members ADD COLUMN {col} {typ}")
-        except:
-            pass
 
     conn.commit()
+    cur.close()
     conn.close()
 
+# Run init once
 init_db()
-update_db()
 
 # ================= HELPER =================
 def val(data, key, default=""):
@@ -70,8 +58,14 @@ def val(data, key, default=""):
 @app.route('/members')
 def members():
     conn = get_db()
-    members = conn.execute("SELECT * FROM members ORDER BY id DESC").fetchall()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("SELECT * FROM members ORDER BY id DESC")
+    members = cur.fetchall()
+
+    cur.close()
     conn.close()
+
     return render_template("members.html", members=members)
 
 # ================= ADD MEMBER =================
@@ -79,17 +73,16 @@ def members():
 def add_member():
     data = request.form
 
-    # Debug (optional)
-    print("FORM DATA RECEIVED:", data)
-
     conn = get_db()
-    conn.execute('''
+    cur = conn.cursor()
+
+    cur.execute('''
     INSERT INTO members (
         member_id, names, id_number, phone, birthdate, gender,
         marital_status, parent_names,
         country, province, district, sector, cell, village,
         role, baptized, baptism_date, itsinda, status, reason
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ''', (
         val(data, "member_id", 0),
         val(data, "names", "Unknown"),
@@ -114,29 +107,52 @@ def add_member():
     ))
 
     conn.commit()
+    cur.close()
     conn.close()
 
     return redirect(url_for('members'))
 
-# ================= VIEW =================
+# ================= VIEW MEMBER =================
 @app.route('/view_member/<int:id>')
 def view_member(id):
     conn = get_db()
-    member = conn.execute("SELECT * FROM members WHERE id=?", (id,)).fetchone()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("SELECT * FROM members WHERE id = %s", (id,))
+    member = cur.fetchone()
+
+    cur.close()
     conn.close()
+
     return render_template("view_member.html", member=member)
 
-# ================= DELETE =================
+# ================= DELETE MEMBER =================
 @app.route('/delete_member/<int:id>')
 def delete_member(id):
     conn = get_db()
-    conn.execute("DELETE FROM members WHERE id=?", (id,))
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM members WHERE id = %s", (id,))
+
     conn.commit()
+    cur.close()
     conn.close()
+
     return redirect(url_for('members'))
 
+# ================= TEST CONNECTION =================
+@app.route('/test_db')
+def test_db():
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT 1;")
+        cur.close()
+        conn.close()
+        return "Database connection SUCCESS ✅"
+    except Exception as e:
+        return f"Database connection FAILED ❌: {e}"
+
 # ================= RUN =================
-if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+if __name__ == '__main__':
+    app.run(debug=True)
