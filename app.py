@@ -161,7 +161,10 @@ def staff():
     conn.close()
 
     return render_template('staff.html', staff=staff)
-
+@app.route('/init-db')
+def init_db_route():
+    init_db()
+    return "Database initialized successfully!"
 
 # ================= ADD STAFF =================
 @app.route('/add_staff', methods=['POST'])
