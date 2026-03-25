@@ -9,37 +9,39 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Initialize base table
+# ================= INIT TABLE =================
 def init_db():
     conn = get_db()
     conn.execute('''
     CREATE TABLE IF NOT EXISTS members (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        names TEXT,
-        id_number TEXT,
-        phone TEXT,
-        birthdate TEXT,
-        gender TEXT
+        id INTEGER PRIMARY KEY AUTOINCREMENT
     )
     ''')
     conn.commit()
     conn.close()
 
-# ================= AUTO MIGRATION =================
+# ================= AUTO ADD COLUMNS =================
 def update_db():
     conn = get_db()
     cursor = conn.cursor()
 
     columns = [
         ("member_id", "INTEGER"),
+        ("names", "TEXT"),
+        ("id_number", "TEXT"),
+        ("phone", "TEXT"),
+        ("birthdate", "TEXT"),
+        ("gender", "TEXT"),
         ("marital_status", "TEXT"),
         ("parent_names", "TEXT"),
+
         ("country", "TEXT"),
         ("province", "TEXT"),
         ("district", "TEXT"),
         ("sector", "TEXT"),
         ("cell", "TEXT"),
         ("village", "TEXT"),
+
         ("role", "TEXT"),
         ("baptized", "TEXT"),
         ("baptism_date", "TEXT"),
@@ -57,7 +59,7 @@ def update_db():
     conn.commit()
     conn.close()
 
-# Run DB setup
+# Initialize DB + update schema
 init_db()
 update_db()
 
@@ -177,12 +179,14 @@ def update_member(id):
         data.get('gender'),
         data.get('marital_status'),
         data.get('parent_names'),
+
         data.get('country'),
         data.get('province'),
         data.get('district'),
         data.get('sector'),
         data.get('cell'),
         data.get('village'),
+
         data.get('role'),
         data.get('baptized'),
         data.get('baptism_date'),
