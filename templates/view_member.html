@@ -95,8 +95,9 @@
 <div class="row"><span class="label">Role:</span> {{ member.role }}</div>
 <div class="row"><span class="label">Baptized:</span> {{ member.baptized }}</div>
 <div class="row"><span class="label">Itsinda:</span> {{ member.itsinda }}</div>
-
-</div>
+<div class="row"><span class="label">Status:</span> {{ member.status }}</div> 
+{% if member['status'] == 'Deactive' %} <div class="row"><span class="label">Reason:</span> 
+    {{ member.reason }}</div> {% endif %}
 
 <a href="/members" class="back-btn">Back</a>
 
