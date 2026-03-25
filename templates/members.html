@@ -7,215 +7,135 @@
     <style>
         body {
             font-family: Arial;
-            margin: 0;
+            margin: 20px;
         }
 
-        /* Header */
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
+        h2 {
             text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: #34495e;
-            overflow: hidden;
-        }
-
-        .navbar a {
-            float: left;
-            color: white;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .navbar a:hover {
-            background-color: #1abc9c;
-        }
-
-        /* Container */
-        .container {
-            padding: 20px;
-        }
-
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
         }
 
         .btn {
+            padding: 10px 15px;
             background-color: green;
             color: white;
-            padding: 8px 12px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+            border-radius: 5px;
         }
 
         .btn:hover {
             background-color: darkgreen;
         }
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .form-container {
+            display: none; /* 🔴 hidden by default */
             margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        Church Data Management System
-    </div>
+<h2>Church Members</h2>
 
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <a href="#">Dashboard</a>
-        <a href="/members">Church Members</a>
-        <a href="#">Staff</a>
-        <a href="#">Infrastructure</a>
-        <a href="#">Finance</a>
-        <a href="#">Newborn</a>
-    </div>
+<!-- ✅ Add Member Button -->
+<button class="btn" onclick="toggleForm()">+ Add Member</button>
 
-    <!-- MAIN CONTENT -->
-    <div class="container">
+<!-- ✅ Hidden Form -->
+<div class="form-container" id="memberForm">
 
-        <div class="top-bar">
-            <h2>Church Members</h2>
-            <button class="btn" onclick="document.getElementById('formSection').scrollIntoView();">
-                Add Member
-            </button>
-        </div>
+    <form method="POST" action="/add_member">
 
-        <!-- MEMBERS TABLE -->
-         <a href="/add" style="background:green; color:white; padding:10px; text-decoration:none;">
-    + Add Member
-</a>
-       <table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Names</th>
-            <th>ID Number</th>
-            <th>Phone</th>
-            <th>Gender</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for member in members %}
-        <tr>
-            <td>{{ member.id }}</td>
-            <td>{{ member.names }}</td>
-            <td>{{ member.id_number }}</td>
-            <td>{{ member.phone }}</td>
-            <td>{{ member.gender }}</td>
-            <td>{{ member.role }}</td>
-            <td>{{ member.status }}</td>
-            <td>
-                <a href="/view/{{ member.id }}">View</a> |
-                <a href="/edit/{{ member.id }}">Edit</a> |
-                <a href="/delete/{{ member.id }}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+        <label>First Name</label>
+        <input type="text" name="first_name" required>
+
+        <label>Last Name</label>
+        <input type="text" name="last_name" required>
+
+        <label>Gender</label>
+        <select name="gender">
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+
+        <label>Date of Birth</label>
+        <input type="date" name="dob">
+
+        <label>Phone</label>
+        <input type="text" name="phone">
+
+        <label>Address</label>
+        <input type="text" name="address">
+
+        <label>Baptized</label>
+        <select name="baptized">
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+
+        <button type="submit" class="btn">Save Member</button>
+    </form>
+
+</div>
+
+<!-- ✅ Members Table -->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Phone</th>
+        <th>Baptized</th>
+    </tr>
+
+    {% for member in members %}
+    <tr>
+        <td>{{ member.id }}</td>
+        <td>{{ member.first_name }} {{ member.last_name }}</td>
+        <td>{{ member.gender }}</td>
+        <td>{{ member.phone }}</td>
+        <td>{{ member.baptized }}</td>
+    </tr>
+    {% endfor %}
+
 </table>
 
-        <!-- ADD MEMBER FORM SECTION -->
-        <div id="formSection" style="margin-top:50px;">
-            <h2>Add Member</h2>
+<!-- ✅ JavaScript -->
+<script>
+    function toggleForm() {
+        var form = document.getElementById("memberForm");
 
-            <
-            form method="POST" action="/add_member">
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+</script>
 
-                <input type="text" name="full_name" placeholder="Full Name" required><br><br>
-                <input type="text" name="national_id" placeholder="ID Number"><br><br>
-                <input type="text" name="phone" placeholder="Phone"><br><br>
-
-                <select name="gender">
-                    <option>Male</option>
-                    <option>Female</option>
-                </select><br><br>
-
-                <input type="date" name="dob"><br><br>
-
-                <select name="district">
-                    <option>Kicukiro</option>
-                    <option>Nyarugenge</option>
-                    <option>Gasabo</option>
-                </select><br><br>
-
-                <input type="text" name="sector" placeholder="Sector"><br><br>
-                <input type="text" name="cell" placeholder="Cell"><br><br>
-                <input type="text" name="village" placeholder="Village"><br><br>
-
-                <select name="role">
-                    <option>Christian</option>
-                    <option>Choir Member</option>
-                    <option>Choir Committee Member</option>
-                    <option>COGEE MEMBER</option>
-                </select><br><br>
-
-                <select name="baptized">
-                    <option>Yes</option>
-                    <option>No</option>
-                </select><br><br>
-
-                <input type="date" name="baptism_date"><br><br>
-
-                <select name="itsinda">
-                    <option>Abanaziri</option>
-                    <option>Abanarada</option>
-                    <option>Abisiraheli</option>
-                    <option>Abayosefu</option>
-                    <option>Modal village</option>
-                    <option>Abaleweli</option>
-                    <option>Ababenyamini</option>
-                    <option>Abaheburayo</option>
-                    <option>Abagidiyoni</option>
-                </select><br><br>
-
-                <select name="status">
-                    <option>Active</option>
-                    <option>Deactive</option>
-                </select><br><br>
-
-                <select name="deactivation_reason">
-                    <option>Change the church</option>
-                    <option>Change the location</option>
-                    <option>Last 1 year without participating in church activities</option>
-                    <option>Abusing internal regulations of the church</option>
-                </select><br><br>
-
-                <button class="btn" type="submit">Save Member</button>
-        </div>
-    </div>
 </body>
 </html>
