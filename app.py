@@ -9,44 +9,60 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Create table if not exists
+# Initialize base table
 def init_db():
     conn = get_db()
     conn.execute('''
     CREATE TABLE IF NOT EXISTS members (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        member_id INTEGER,
         names TEXT,
         id_number TEXT,
         phone TEXT,
         birthdate TEXT,
-        gender TEXT,
-        marital_status TEXT,
-        parent_names TEXT,
-
-        country TEXT,
-        province TEXT,
-        district TEXT,
-        sector TEXT,
-        cell TEXT,
-        village TEXT,
-
-        role TEXT,
-        baptized TEXT,
-        baptism_date TEXT,
-        itsinda TEXT,
-        status TEXT,
-        reason TEXT
+        gender TEXT
     )
     ''')
     conn.commit()
     conn.close()
 
+# ================= AUTO MIGRATION =================
+def update_db():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    columns = [
+        ("member_id", "INTEGER"),
+        ("marital_status", "TEXT"),
+        ("parent_names", "TEXT"),
+        ("country", "TEXT"),
+        ("province", "TEXT"),
+        ("district", "TEXT"),
+        ("sector", "TEXT"),
+        ("cell", "TEXT"),
+        ("village", "TEXT"),
+        ("role", "TEXT"),
+        ("baptized", "TEXT"),
+        ("baptism_date", "TEXT"),
+        ("itsinda", "TEXT"),
+        ("status", "TEXT"),
+        ("reason", "TEXT")
+    ]
+
+    for col, typ in columns:
+        try:
+            cursor.execute(f"ALTER TABLE members ADD COLUMN {col} {typ}")
+        except:
+            pass
+
+    conn.commit()
+    conn.close()
+
+# Run DB setup
 init_db()
+update_db()
 
 # ================= ROUTES =================
 
-# HOME / MEMBERS PAGE
 @app.route('/')
 @app.route('/members')
 def members():
@@ -56,52 +72,49 @@ def members():
     return render_template("members.html", members=members)
 
 # ADD MEMBER
-@app.route('/add_member', methods=['GET', 'POST'])
+@app.route('/add_member', methods=['POST'])
 def add_member():
-    if request.method == 'POST':
-        data = request.form
+    data = request.form
 
-        conn = get_db()
-        conn.execute('''
-        INSERT INTO members (
-            member_id, names, id_number, phone, birthdate, gender,
-            marital_status, parent_names,
-            country, province, district, sector, cell, village,
-            role, baptized, baptism_date, itsinda, status, reason
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            data.get('member_id'),
-            data.get('names'),
-            data.get('id_number'),
-            data.get('phone'),
-            data.get('birthdate'),
-            data.get('gender'),
-            data.get('marital_status'),
-            data.get('parent_names'),
+    conn = get_db()
+    conn.execute('''
+    INSERT INTO members (
+        member_id, names, id_number, phone, birthdate, gender,
+        marital_status, parent_names,
+        country, province, district, sector, cell, village,
+        role, baptized, baptism_date, itsinda, status, reason
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        int(data.get('member_id') or 0),
+        data.get('names'),
+        data.get('id_number'),
+        data.get('phone'),
+        data.get('birthdate'),
+        data.get('gender'),
+        data.get('marital_status'),
+        data.get('parent_names'),
 
-            data.get('country'),
-            data.get('province'),
-            data.get('district'),
-            data.get('sector'),
-            data.get('cell'),
-            data.get('village'),
+        data.get('country'),
+        data.get('province'),
+        data.get('district'),
+        data.get('sector'),
+        data.get('cell'),
+        data.get('village'),
 
-            data.get('role'),
-            data.get('baptized'),
-            data.get('baptism_date'),
-            data.get('itsinda'),
-            data.get('status'),
-            data.get('reason')
-        ))
+        data.get('role'),
+        data.get('baptized'),
+        data.get('baptism_date'),
+        data.get('itsinda'),
+        data.get('status'),
+        data.get('reason')
+    ))
 
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for('members'))
+    conn.commit()
+    conn.close()
 
     return redirect(url_for('members'))
 
-# VIEW MEMBER (FULL DETAILS)
+# VIEW MEMBER
 @app.route('/view_member/<int:id>')
 def view_member(id):
     conn = get_db()
@@ -118,7 +131,7 @@ def delete_member(id):
     conn.close()
     return redirect(url_for('members'))
 
-# EDIT MEMBER PAGE
+# EDIT MEMBER
 @app.route('/edit_member/<int:id>')
 def edit_member(id):
     conn = get_db()
@@ -142,14 +155,12 @@ def update_member(id):
         gender=?,
         marital_status=?,
         parent_names=?,
-
         country=?,
         province=?,
         district=?,
         sector=?,
         cell=?,
         village=?,
-
         role=?,
         baptized=?,
         baptism_date=?,
@@ -158,7 +169,7 @@ def update_member(id):
         reason=?
     WHERE id=?
     ''', (
-        data.get('member_id'),
+        int(data.get('member_id') or 0),
         data.get('names'),
         data.get('id_number'),
         data.get('phone'),
@@ -166,14 +177,12 @@ def update_member(id):
         data.get('gender'),
         data.get('marital_status'),
         data.get('parent_names'),
-
         data.get('country'),
         data.get('province'),
         data.get('district'),
         data.get('sector'),
         data.get('cell'),
         data.get('village'),
-
         data.get('role'),
         data.get('baptized'),
         data.get('baptism_date'),
