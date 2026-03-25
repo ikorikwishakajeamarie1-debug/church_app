@@ -8,14 +8,48 @@
 <h2>Add Staff</h2>
 
 <form action="/save_staff" method="POST">
-    <label>Name:</label>
+
+    Name:<br>
     <input type="text" name="name" required><br><br>
 
-    <label>Role:</label>
-    <input type="text" name="role" required><br><br>
+    ID Number:<br>
+    <input type="text" name="id_number" required><br><br>
+
+    Gender:<br>
+    <select name="gender" required>
+        <option value="">Select</option>
+        <option>Male</option>
+        <option>Female</option>
+    </select><br><br>
+
+    Role:<br>
+    <select name="role" required>
+        <option value="">Select</option>
+        <option>Pastor</option>
+        <option>President of COGEE</option>
+        <option>President of Choir</option>
+        <option>Group Leader</option>
+    </select><br><br>
+
+    Phone Number:<br>
+    <input type="text" name="phone" required><br><br>
+
+    Status:<br>
+    <select name="status" required>
+        <option value="">Select</option>
+        <option>New</option>
+        <option>Existing</option>
+        <option>Inactive</option>
+        <option>Changed</option>
+        <option>Transferred</option>
+    </select><br><br>
 
     <button type="submit">Save</button>
+
 </form>
+
+<br>
+<a href="/staff">Back</a>
 
 </body>
 </html>

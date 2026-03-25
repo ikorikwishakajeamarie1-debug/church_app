@@ -149,83 +149,69 @@ def view_member(id):
 
 
 # ================= STAFF =================
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+# Temporary storage (replace with DB if you already use one)
+staff_list = []
+
+@app.route('/')
+def home():
+    return redirect('/staff')
+
+
 @app.route('/staff')
 def staff():
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    return render_template('staff.html', staff=staff_list)
 
-    cur.execute("SELECT * FROM staff ORDER BY id DESC")
-    staff = cur.fetchall()
 
-    cur.close()
-    conn.close()
-
-    return render_template('staff.html', staff=staff)
-@app.route('/delete_staff/<int:id>')
-def delete_staff(id):
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute("DELETE FROM staff WHERE id=%s", (id,))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect('/staff')
-@app.route('/edit_staff/<int:id>')
-def edit_staff(id):
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-
-    cur.execute("SELECT * FROM staff WHERE id=%s", (id,))
-    staff = cur.fetchone()
-
-    cur.close()
-    conn.close()
-
-    return render_template('edit_staff.html', staff=staff)
-# ================= ADD STAFF =================
-@app.route('/update_staff/<int:id>', methods=['POST'])
-def update_staff(id):
-    data = request.form
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute('''
-        UPDATE staff
-        SET names=%s, id_number=%s, gender=%s, phone=%s, role=%s, status=%s
-        WHERE id=%s
-    ''', (
-        data.get('names'),
-        data.get('id_number'),
-        data.get('gender'),
-        data.get('phone'),
-        data.get('role'),
-        data.get('status'),
-        id
-    ))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect('/staff')
-@app.route('/save_staff', methods=['POST'])
-def save_staff():
-    # get form data
-    name = request.form['name']
-    role = request.form['role']
-
-    # save to database (or list)
-    
-    return redirect('/staff')  # redirect back to staff page
 @app.route('/staff/add')
 def add_staff():
     return render_template('add_staff.html')
 
-# ================= START APP =================
+
+@app.route('/save_staff', methods=['POST'])
+def save_staff():
+    staff = {
+        "id_number": request.form.get("id_number"),
+        "name": request.form.get("name"),
+        "gender": request.form.get("gender"),
+        "role": request.form.get("role"),
+        "phone": request.form.get("phone"),
+        "status": request.form.get("status")
+    }
+
+    staff_list.append(staff)
+
+    return redirect('/staff')
+
+
+@app.route('/delete/<int:index>')
+def delete_staff(index):
+    if 0 <= index < len(staff_list):
+        staff_list.pop(index)
+    return redirect('/staff')
+
+
+@app.route('/edit/<int:index>')
+def edit_staff(index):
+    staff = staff_list[index]
+    return render_template('edit_staff.html', staff=staff, index=index)
+
+
+@app.route('/update/<int:index>', methods=['POST'])
+def update_staff(index):
+    staff_list[index] = {
+        "id_number": request.form.get("id_number"),
+        "name": request.form.get("name"),
+        "gender": request.form.get("gender"),
+        "role": request.form.get("role"),
+        "phone": request.form.get("phone"),
+        "status": request.form.get("status")
+    }
+    return redirect('/staff')
+
+
 if __name__ == "__main__":
-    init_db()   # ✅ creates tables if not exist
     app.run(debug=True)
