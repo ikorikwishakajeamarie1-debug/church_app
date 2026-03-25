@@ -56,45 +56,48 @@ def members():
     return render_template("members.html", members=members)
 
 # ADD MEMBER
-@app.route('/add_member', methods=['POST'])
+@app.route('/add_member', methods=['GET', 'POST'])
 def add_member():
-    data = request.form
+    if request.method == 'POST':
+        data = request.form
 
-    conn = get_db()
-    conn.execute('''
-    INSERT INTO members (
-        member_id, names, id_number, phone, birthdate, gender,
-        marital_status, parent_names,
-        country, province, district, sector, cell, village,
-        role, baptized, baptism_date, itsinda, status, reason
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        data.get('member_id'),
-        data.get('names'),
-        data.get('id_number'),
-        data.get('phone'),
-        data.get('birthdate'),
-        data.get('gender'),
-        data.get('marital_status'),
-        data.get('parent_names'),
+        conn = get_db()
+        conn.execute('''
+        INSERT INTO members (
+            member_id, names, id_number, phone, birthdate, gender,
+            marital_status, parent_names,
+            country, province, district, sector, cell, village,
+            role, baptized, baptism_date, itsinda, status, reason
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            data.get('member_id'),
+            data.get('names'),
+            data.get('id_number'),
+            data.get('phone'),
+            data.get('birthdate'),
+            data.get('gender'),
+            data.get('marital_status'),
+            data.get('parent_names'),
 
-        data.get('country'),
-        data.get('province'),
-        data.get('district'),
-        data.get('sector'),
-        data.get('cell'),
-        data.get('village'),
+            data.get('country'),
+            data.get('province'),
+            data.get('district'),
+            data.get('sector'),
+            data.get('cell'),
+            data.get('village'),
 
-        data.get('role'),
-        data.get('baptized'),
-        data.get('baptism_date'),
-        data.get('itsinda'),
-        data.get('status'),
-        data.get('reason')
-    ))
+            data.get('role'),
+            data.get('baptized'),
+            data.get('baptism_date'),
+            data.get('itsinda'),
+            data.get('status'),
+            data.get('reason')
+        ))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('members'))
 
     return redirect(url_for('members'))
 
