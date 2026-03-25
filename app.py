@@ -212,7 +212,23 @@ def update_staff(id):
     conn.close()
 
     return redirect('/staff')
+@app.route('/save_staff', methods=['POST'])
+def save_staff():
+    # get form data
+    name = request.form['name']
+    role = request.form['role']
 
+    # save to database (or list)
+    
+    return redirect('/staff')  # redirect back to staff page
+
+@app.route('/staff')
+def staff():
+    staff_list = []  # fetch from DB if available
+    return render_template('staff.html', staff=staff_list)
+@app.route('/staff/add')
+def add_staff():
+    return render_template('add_staff.html')
 
 # ================= START APP =================
 if __name__ == "__main__":
