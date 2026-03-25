@@ -1,251 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Church Data Management System</title>
+{% extends "base.html" %}
+{% block content %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background: #f4f6f9;
-        }
+<h2>Church Members</h2>
 
-        /* ===== TITLE ===== */
-        .title {
-            background: #1f2d3d;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            font-size: 22px;
-            font-weight: bold;
-        }
+<a href="/members/add"><button>Add Member</button></a>
 
-        /* ===== MENU ===== */
-        .menu {
-            background: #2c3e50;
-            padding: 10px;
-            text-align: center;
-        }
+<table border="1">
+<tr>
+    <th>Name</th>
+    <th>ID</th>
+    <th>Phone</th>
+    <th>Gender</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
 
-        .menu a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+{% for m in members %}
+<tr>
+    <td>{{ m[1] }}</td>
+    <td>{{ m[2] }}</td>
+    <td>{{ m[4] }}</td>
+    <td>{{ m[5] }}</td>
+    <td>{{ m[15] }}</td>
+    <td>
+        <a href="/edit_member/{{ m[0] }}">Edit</a> |
+        <a href="/delete_member/{{ m[0] }}">Delete</a>
+    </td>
+</tr>
+{% endfor %}
 
-        .menu a:hover {
-            color: #1abc9c;
-        }
+</table>
 
-        /* ===== CONTAINER ===== */
-        .container {
-            padding: 20px;
-        }
-
-        /* ===== BUTTON ===== */
-        .add-btn {
-            background: green;
-            color: white;
-            padding: 10px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        /* ===== TABLE ===== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: white;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background: #34495e;
-            color: white;
-        }
-
-        /* ===== FORM ===== */
-        .form-section {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-        }
-
-        .btn {
-            padding: 8px;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .view { background: blue; }
-        .delete { background: red; }
-
-    </style>
-
-    <script>
-        function showForm() {
-            document.getElementById("formSection").style.display = "block";
-            document.getElementById("tableSection").style.display = "none";
-        }
-
-        function showTable() {
-            document.getElementById("formSection").style.display = "none";
-            document.getElementById("tableSection").style.display = "block";
-        }
-    </script>
-
-</head>
-
-<body>
-
-<!-- TITLE -->
-<div class="title">
-    Church Data Management System
-</div>
-
-<!-- MENU -->
-<div class="menu">
-    <a href="#">Dashboard</a>
-    <a href="#" onclick="showTable()">Church Members</a>
-    <a href="/staff">Staff</a>
-    <a href="#">Infrastructure</a>
-    <a href="#">Finance</a>
-    <a href="#">Newborn</a>
-</div>
-
-<div class="container">
-
-    <!-- TABLE SECTION -->
-    <div id="tableSection">
-
-        <a href="#" class="add-btn" onclick="showForm()">+ Add Member</a>
-
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Names</th>
-                <th>ID Number</th>
-                <th>Gender</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-
-            {% for m in members %}
-            <tr>
-                <td>{{ m.member_id }}</td>
-                <td>{{ m.names }}</td>
-                <td>{{ m.id_number }}</td>
-                <td>{{ m.gender }}</td>
-                <td>{{ m.phone }}</td>
-                <td>{{ m.status }}</td>
-                <td>
-                    <a href="/view_member/{{ m.id }}" class="btn view">View</a>
-                    <a href="/delete_member/{{ m.id }}" class="btn delete">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-
-    </div>
-
-    <!-- FORM SECTION -->
-    <div id="formSection" class="form-section">
-
-        <h2>Add Member</h2>
-
-        <form action="/add_member" method="POST">
-
-            <h3>Personal Identification</h3>
-
-            <input type="text" name="names" placeholder="Names" required>
-            <input type="text" name="id_number" placeholder="ID Number">
-            <input type="text" name="phone" placeholder="Phone">
-
-            <input type="date" name="birthdate">
-
-            <select name="gender">
-                <option>Male</option>
-                <option>Female</option>
-            </select>
-
-            <select name="marital_status">
-                <option>Single</option>
-                <option>Married</option>
-                <option>Widow</option>
-                <option>Widower</option>
-                <option>Divorced</option>
-            </select>
-
-            <h3>Location</h3>
-
-            <input type="text" name="country" value="Rwanda">
-            <input type="text" name="province" value="Kigali">
-
-            <select name="district">
-                <option>Kicukiro</option>
-                <option>Nyarugenge</option>
-                <option>Gasabo</option>
-            </select>
-
-            <input type="text" name="sector">
-            <input type="text" name="cell">
-            <input type="text" name="village">
-
-            <h3>Church Responsibilities</h3>
-
-            <select name="role">
-                <option>Christian</option>
-                <option>Choir member</option>
-                <option>Choir committee</option>
-                <option>COGEE member</option>
-            </select>
-
-            <select name="baptized">
-                <option>Yes</option>
-                <option>No</option>
-            </select>
-
-            <input type="date" name="baptism_date">
-
-            <select name="itsinda">
-                <option>Abanaziri</option>
-                <option>Abanarada</option>
-                <option>Abisiraheli</option>
-            </select>
-
-            <select name="status">
-                <option>Active</option>
-                <option>Deactive</option>
-            </select>
-
-            <input type="text" name="reason" placeholder="Reason if Deactive">
-
-            <button type="submit">Save Member</button>
-
-        </form>
-
-        <br>
-        <button onclick="showTable()">⬅ Back to Members</button>
-
-    </div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

@@ -4,161 +4,127 @@ import os
 
 app = Flask(__name__)
 
-# ==============================
 # DATABASE CONNECTION
-# ==============================
 def get_db_connection():
-    conn = psycopg2.connect(
+    return psycopg2.connect(
         host=os.getenv("DB_HOST"),
         database=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
         port=5432
     )
-    return conn
 
-
-# ==============================
-# HOME / DASHBOARD
-# ==============================
+# DASHBOARD
 @app.route('/')
 def dashboard():
     return render_template('dashboard.html')
 
+# ================= MEMBERS =================
 
-# ==============================
-# MEMBERS
-# ==============================
+# VIEW MEMBERS
 @app.route('/members')
 def members():
     conn = get_db_connection()
     cur = conn.cursor()
-
     cur.execute("SELECT * FROM members")
     members = cur.fetchall()
-
     cur.close()
     conn.close()
-
     return render_template('members.html', members=members)
 
+# ADD MEMBER PAGE
+@app.route('/members/add')
+def add_member():
+    return render_template('add_member.html')
 
-# ==============================
-# STAFF - VIEW
-# ==============================
-@app.route('/staff')
-def staff():
-    conn = get_db_connection()
-    cur = conn.cursor()
-
-    cur.execute("SELECT * FROM staff")
-    staff = cur.fetchall()
-
-    cur.close()
-    conn.close()
-
-    return render_template('staff.html', staff=staff)
-
-
-# ==============================
-# STAFF - ADD FORM
-# ==============================
-@app.route('/staff/add')
-def add_staff():
-    return render_template('add_staff.html')
-
-
-# ==============================
-# STAFF - SAVE
-# ==============================
-@app.route('/save_staff', methods=['POST'])
-def save_staff():
-    name = request.form.get('name')
-    id_number = request.form.get('id_number')
-    gender = request.form.get('gender')
-    role = request.form.get('role')
-    phone = request.form.get('phone')
-    status = request.form.get('status')
+# SAVE MEMBER
+@app.route('/save_member', methods=['POST'])
+def save_member():
+    data = (
+        request.form['name'],
+        request.form['id_number'],
+        request.form['birthdate'],
+        request.form['phone'],
+        request.form['gender'],
+        request.form['marital_status'],
+        request.form.get('parent_name'),
+        request.form['district'],
+        request.form['sector'],
+        request.form['cell'],
+        request.form['village'],
+        request.form['role'],
+        request.form['baptized'],
+        request.form.get('baptized_date'),
+        request.form['status'],
+        request.form.get('reason')
+    )
 
     conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
-        INSERT INTO staff (name, id_number, gender, role, phone, status)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """, (name, id_number, gender, role, phone, status))
+    INSERT INTO members 
+    (name, id_number, birthdate, phone, gender, marital_status, parent_name,
+     district, sector, cell, village, role, baptized, baptized_date, status, reason)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    """, data)
 
     conn.commit()
     cur.close()
     conn.close()
 
-    return redirect('/staff')
+    return redirect('/members')
 
 
-# ==============================
-# STAFF - DELETE
-# ==============================
-@app.route('/delete_staff/<int:id>')
-def delete_staff(id):
+# DELETE
+@app.route('/delete_member/<int:id>')
+def delete_member(id):
     conn = get_db_connection()
     cur = conn.cursor()
-
-    cur.execute("DELETE FROM staff WHERE id = %s", (id,))
-
+    cur.execute("DELETE FROM members WHERE id=%s", (id,))
     conn.commit()
     cur.close()
     conn.close()
+    return redirect('/members')
 
-    return redirect('/staff')
 
-
-# ==============================
-# STAFF - EDIT FORM
-# ==============================
-@app.route('/edit_staff/<int:id>')
-def edit_staff(id):
+# EDIT
+@app.route('/edit_member/<int:id>')
+def edit_member(id):
     conn = get_db_connection()
     cur = conn.cursor()
-
-    cur.execute("SELECT * FROM staff WHERE id = %s", (id,))
-    staff = cur.fetchone()
-
+    cur.execute("SELECT * FROM members WHERE id=%s", (id,))
+    member = cur.fetchone()
     cur.close()
     conn.close()
+    return render_template('edit_member.html', member=member)
 
-    return render_template('edit_staff.html', staff=staff)
 
-
-# ==============================
-# STAFF - UPDATE
-# ==============================
-@app.route('/update_staff/<int:id>', methods=['POST'])
-def update_staff(id):
-    name = request.form.get('name')
-    id_number = request.form.get('id_number')
-    gender = request.form.get('gender')
-    role = request.form.get('role')
-    phone = request.form.get('phone')
-    status = request.form.get('status')
-
+# UPDATE
+@app.route('/update_member/<int:id>', methods=['POST'])
+def update_member(id):
     conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
-        UPDATE staff
-        SET name=%s, id_number=%s, gender=%s, role=%s, phone=%s, status=%s
-        WHERE id=%s
-    """, (name, id_number, gender, role, phone, status, id))
+    UPDATE members SET
+    name=%s, id_number=%s, phone=%s, gender=%s, status=%s
+    WHERE id=%s
+    """, (
+        request.form['name'],
+        request.form['id_number'],
+        request.form['phone'],
+        request.form['gender'],
+        request.form['status'],
+        id
+    ))
 
     conn.commit()
     cur.close()
     conn.close()
 
-    return redirect('/staff')
+    return redirect('/members')
 
 
-# ==============================
-# RUN APP
-# ==============================
 if __name__ == "__main__":
     app.run(debug=True)

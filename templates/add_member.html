@@ -1,139 +1,96 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Member</title>
+{% extends "base.html" %}
+{% block content %}
 
-    <style>
-        body { font-family: Arial; background:#f4f6f9; }
-        .container { width:70%; margin:auto; background:white; padding:20px; }
-        h2 { text-align:center; }
-
-        .section { margin-top:20px; }
-        .section h3 { background:#007BFF; color:white; padding:10px; }
-
-        input, select {
-            width:100%;
-            padding:8px;
-            margin:5px 0;
-        }
-
-        button {
-            background:green;
-            color:white;
-            padding:10px;
-            width:100%;
-            border:none;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>Add New Member</h2>
-
-<form method="POST">
-
-<!-- PERSONAL -->
-<div class="section">
-<h3>Personal Identification</h3>
-
-<input name="name" placeholder="Full Name" required>
-<input name="id_number" placeholder="Identity Card Number" required>
-<input type="date" name="birthdate">
-<input name="phone" placeholder="Phone Number">
-
-<select name="gender">
-<option>Male</option>
-<option>Female</option>
-</select>
-
-<select name="marital_status">
-<option>Single</option>
-<option>Married</option>
-</select>
-
-<input name="parents" placeholder="Parent Name (if single)">
-</div>
-
-<!-- LOCATION -->
-<div class="section">
-<h3>Location Details</h3>
-
-<input name="country" value="Rwanda">
-<input name="province" value="Kigali">
-
-<select name="district">
-<option>Kicukiro</option>
-<option>Gasabo</option>
-<option>Nyarugenge</option>
-</select>
-
-<input name="sector" placeholder="Sector">
-<input name="cell" placeholder="Cell">
-<input name="village" placeholder="Village">
-</div>
-
-<!-- CHURCH -->
-<div class="section">
-<h3>Church Responsibilities</h3>
-
-<select name="role">
-<option>Christian</option>
-<option>Choir Member</option>
-<option>Choir Committee Member</option>
-<option>COGEE MEMBER</option>
-</select>
-
-<select name="baptized">
-<option>Yes</option>
-<option>No</option>
-</select>
-
-<select name="itsinda">
-<option>Abanaziri</option>
-<option>Abanarada</option>
-<option>Abisiraheli</option>
-<option>Abayosefu</option>
-<option>Modal village</option>
-<option>Abaleweli</option>
-<option>Ababenyamini</option>
-<option>Abaheburayo</option>
-<option>Abagidiyoni</option>
-</select>
-
-</div>
-
-<button type="submit">Save Member</button>
-
-</form>
-
-</div>
-
-</body>
-</html>
 <h2>Add Member</h2>
-<form method="POST" action="/add">
-    <input type="text" name="names" placeholder="Full Name" required><br>
-    <input type="text" name="id_number" placeholder="ID Number" required><br>
-    <input type="text" name="phone" placeholder="Phone" required><br>
 
-    <select name="gender" required>
-        <option value="">Select Gender</option>
-        <option>Male</option>
-        <option>Female</option>
-    </select><br>
+<form action="/save_member" method="POST">
 
-    <input type="text" name="role" placeholder="Role" required><br>
+<h3>Personal Identification</h3>
+Name: <input type="text" name="name" required><br>
+ID Number: <input type="text" name="id_number"><br>
+Birthdate: <input type="date" name="birthdate"><br>
+Phone: <input type="text" name="phone"><br>
 
-    <select name="status" required>
-        <option value="">Select Status</option>
-        <option>Active</option>
-        <option>Inactive</option>
-    </select><br>
+Gender:
+<select name="gender">
+    <option>Male</option>
+    <option>Female</option>
+</select><br>
 
-    <button type="submit">Add Member</button>
-</form>
+Marital Status:
+<select name="marital_status" id="marital" onchange="toggleParent()">
+    <option>Married</option>
+    <option>Widow</option>
+    <option>Widower</option>
+    <option>Divorced</option>
+    <option>Single</option>
+</select><br>
+
+<div id="parentField" style="display:none;">
+Parent Name: <input type="text" name="parent_name"><br>
+</div>
+
+<h3>Location</h3>
+District:
+<select name="district">
+    <option>Kicukiro</option>
+    <option>Nyarugenge</option>
+    <option>Gasabo</option>
+</select><br>
+
+Sector: <input name="sector"><br>
+Cell: <input name="cell"><br>
+Village: <input name="village"><br>
+
+<h3>Church</h3>
+Role:
+<select name="role">
+    <option>Christian</option>
+    <option>COGEE Member</option>
+    <option>Choir Committee Member</option>
+    <option>Choir Member</option>
+</select><br>
+
+Baptized:
+<select name="baptized">
+    <option>Yes</option>
+    <option>No</option>
+</select><br>
+
+Baptized Date:
+<input type="date" name="baptized_date"><br>
+
+Status:
+<select name="status" id="status" onchange="toggleReason()">
+    <option>Active</option>
+    <option>Deactive</option>
+</select><br>
+
+<div id="reasonField" style="display:none;">
+Reason:
+<select name="reason">
+    <option>Changed location</option>
+    <option>Changed church</option>
+    <option>1 year inactive</option>
+    <option>Abusing regulations</option>
+</select>
+</div>
+
 <br>
-<a href="/members">Back</a>
+<button type="submit">Save</button>
+
+</form>
+
+<script>
+function toggleParent() {
+    let m = document.getElementById("marital").value;
+    document.getElementById("parentField").style.display = (m === "Single") ? "block" : "none";
+}
+
+function toggleReason() {
+    let s = document.getElementById("status").value;
+    document.getElementById("reasonField").style.display = (s === "Deactive") ? "block" : "none";
+}
+</script>
+
+{% endblock %}
