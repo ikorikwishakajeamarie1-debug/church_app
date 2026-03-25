@@ -47,6 +47,26 @@ def init_db():
 
 # Run init once
 init_db()
+def init_db():
+    conn = get_db()   # connect to database
+    cur = conn.cursor()  # create cursor
+
+    # ===== STAFF TABLE =====
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS staff (
+        id SERIAL PRIMARY KEY,
+        names TEXT,
+        id_number TEXT,
+        gender TEXT,
+        phone TEXT,
+        role TEXT,
+        status TEXT
+    )
+    ''')
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
 # ================= HELPER =================
 def val(data, key, default=""):
@@ -54,6 +74,46 @@ def val(data, key, default=""):
 
 # ================= ROUTES =================
 
+# ================= STAFF PAGE =================
+@app.route('/staff')
+def staff():
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("SELECT * FROM staff ORDER BY id DESC")
+    staff = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template("staff.html", staff=staff)
+
+
+# ================= ADD STAFF =================
+@app.route('/add_staff', methods=['POST'])
+def add_staff():
+    data = request.form
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute('''
+    INSERT INTO staff (names, id_number, gender, phone, role, status)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    ''', (
+        data.get("names"),
+        data.get("id_number"),
+        data.get("gender"),
+        data.get("phone"),
+        data.get("role"),
+        data.get("status")
+    ))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect('/staff')
 @app.route('/')
 @app.route('/members')
 def members():
@@ -156,5 +216,6 @@ def test_db():
         return f"Database connection FAILED ❌: {e}"
 
 # ================= RUN =================
-if __name__ == '__main__':
+if __name__ == "__main__":
+    init_db()   # ✅ this creates staff table
     app.run(debug=True)

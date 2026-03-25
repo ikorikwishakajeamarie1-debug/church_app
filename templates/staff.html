@@ -1,50 +1,157 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page</title>
+    <title>Staff</title>
 
     <style>
-        body { margin:0; font-family:Arial; }
+        body { font-family: Arial; margin: 0; background: #f4f6f9; }
 
-        .navbar {
-            background-color: #007BFF;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
+        .title {
+            background: #1f2d3d;
+            color: white;
+            text-align: center;
+            padding: 15px;
         }
 
-        .logo { color:white; font-weight:bold; }
+        .menu {
+            background: #2c3e50;
+            text-align: center;
+            padding: 10px;
+        }
 
         .menu a {
-            color:white;
-            margin-left:15px;
-            text-decoration:none;
-            padding:6px 10px;
-            border-radius:5px;
+            color: white;
+            margin: 10px;
+            text-decoration: none;
         }
 
-        .menu a:hover {
-            background:#0056b3;
+        .container { padding: 20px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
         }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        .form-section { display: none; }
+
+        .btn {
+            padding: 8px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add { background: green; }
     </style>
+
+    <script>
+        function showForm() {
+            document.getElementById("form").style.display = "block";
+            document.getElementById("table").style.display = "none";
+        }
+
+        function showTable() {
+            document.getElementById("form").style.display = "none";
+            document.getElementById("table").style.display = "block";
+        }
+    </script>
 </head>
 
 <body>
 
-<div class="navbar">
-    <div class="logo">Church System</div>
+<div class="title">Church Data Management System</div>
 
-    <div class="menu">
-        <a href="/dashboard">Dashboard</a>
-        <a href="/members">Church Members</a>
-        <a href="/staff" style="background:#0056b3;">Staff</a>
-        <a href="/infrastructure">Infrastructure</a>
-        <a href="/finance">Finance</a>
-        <a href="/newborn">Newborn</a>
-    </div>
+<div class="menu">
+    <a href="/">Dashboard</a>
+    <a href="/members">Church Members</a>
+    <a href="/staff">Staff</a>
 </div>
 
-<h2 style="text-align:center;">Coming Soon</h2>
+<div class="container">
+
+    <!-- TABLE -->
+    <div id="table">
+        <button class="btn add" onclick="showForm()">+ Add Staff</button>
+
+        <table>
+            <tr>
+                <th>Names</th>
+                <th>ID Number</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Role</th>
+            </tr>
+
+            {% for s in staff %}
+            <tr>
+                <td>{{ s.names }}</td>
+                <td>{{ s.id_number }}</td>
+                <td>{{ s.gender }}</td>
+                <td>{{ s.phone }}</td>
+                <td>{{ s.status }}</td>
+                <td>{{ s.role }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- FORM -->
+    <div id="form" class="form-section">
+
+        <h2>Add Staff</h2>
+
+        <form method="POST" action="/add_staff">
+
+            <input type="text" name="names" placeholder="Names" required>
+            <input type="text" name="id_number" placeholder="ID Number">
+
+            <select name="gender">
+                <option>Male</option>
+                <option>Female</option>
+            </select>
+
+            <input type="text" name="phone" placeholder="Phone">
+
+            <select name="status">
+                <option>Existing</option>
+                <option>New</option>
+                <option>Deactive</option>
+            </select>
+
+            <select name="role">
+                <option>Pastor</option>
+                <option>Group Leader</option>
+                <option>President of Choir</option>
+                <option>President of COGEE</option>
+            </select>
+
+            <button type="submit" class="btn add">Save</button>
+        </form>
+
+        <br>
+        <button onclick="showTable()">⬅ Back</button>
+
+    </div>
+
+</div>
 
 </body>
 </html>
