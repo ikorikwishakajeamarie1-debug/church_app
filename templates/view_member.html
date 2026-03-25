@@ -1,69 +1,189 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>View Member</title>
+
     <style>
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .container {
             padding: 20px;
         }
+
         .card {
-            border: 1px solid #ccc;
+            background: white;
             padding: 20px;
             border-radius: 10px;
-            max-width: 600px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+
         h2 {
-            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 20px;
         }
-        p {
-            margin: 5px 0;
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .status-active {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-deactive {
+            color: red;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
     </style>
 </head>
+
 <body>
 
-<div class="card">
-    <h2>Member Details</h2>
+<div class="header">
+    Member Details
+</div>
 
-    <p><strong>Member ID:</strong> {{ member['member_id'] }}</p>
+<div class="container">
+    <div class="card">
 
-    <p><strong>Name:</strong> {{ member['names'] }}</p>
+        <!-- PERSONAL INFO -->
+        <h2>Personal Information</h2>
 
-    <p><strong>ID Number:</strong> {{ member['id_number'] }}</p>
+        <div class="row">
+            <span class="label">Name:</span>
+            <span>{{ member['names'] }}</span>
+        </div>
 
-    <p><strong>Phone:</strong> {{ member['phone'] }}</p>
+        <div class="row">
+            <span class="label">ID Number:</span>
+            <span>{{ member['id_number'] }}</span>
+        </div>
 
-    <p><strong>Gender:</strong> {{ member['gender'] }}</p>
+        <div class="row">
+            <span class="label">Phone:</span>
+            <span>{{ member['phone'] }}</span>
+        </div>
 
-    <p><strong>Marital Status:</strong> {{ member['marital_status'] }}</p>
+        <div class="row">
+            <span class="label">Gender:</span>
+            <span>{{ member['gender'] }}</span>
+        </div>
 
-    <hr>
+        <div class="row">
+            <span class="label">Marital Status:</span>
+            <span>{{ member['marital_status'] }}</span>
+        </div>
 
-    <p><strong>Location:</strong></p>
-    <p>{{ member['country'] }}, {{ member['province'] }}, {{ member['district'] }}</p>
-    <p>{{ member['sector'] }}, {{ member['cell'] }}, {{ member['village'] }}</p>
+        <!-- LOCATION -->
+        <h2>Location Details</h2>
 
-    <hr>
+        <div class="row">
+            <span class="label">Country:</span>
+            <span>{{ member['country'] }}</span>
+        </div>
 
-    <p><strong>Role:</strong> {{ member['role'] }}</p>
+        <div class="row">
+            <span class="label">Province:</span>
+            <span>{{ member['province'] }}</span>
+        </div>
 
-    <p><strong>Baptized:</strong> {{ member['baptized'] }}</p>
+        <div class="row">
+            <span class="label">District:</span>
+            <span>{{ member['district'] }}</span>
+        </div>
 
-    <p><strong>Baptism Date:</strong> {{ member['baptism_date'] }}</p>
+        <div class="row">
+            <span class="label">Sector:</span>
+            <span>{{ member['sector'] }}</span>
+        </div>
 
-    <p><strong>Itsinda:</strong> {{ member['itsinda'] }}</p>
+        <div class="row">
+            <span class="label">Cell:</span>
+            <span>{{ member['cell'] }}</span>
+        </div>
 
-    <hr>
+        <div class="row">
+            <span class="label">Village:</span>
+            <span>{{ member['village'] }}</span>
+        </div>
 
-    <p><strong>Status:</strong> {{ member['status'] }}</p>
+        <!-- CHURCH INFO -->
+        <h2>Church Responsibilities</h2>
 
-    {% if member['status'] == 'Deactive' %}
-        <p><strong>Reason:</strong> {{ member['reason'] }}</p>
-    {% endif %}
+        <div class="row">
+            <span class="label">Role:</span>
+            <span>{{ member['role'] }}</span>
+        </div>
 
-    <br>
-    <a href="/members">⬅ Back</a>
+        <div class="row">
+            <span class="label">Baptized:</span>
+            <span>{{ member['baptized'] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Baptism Date:</span>
+            <span>{{ member['baptism_date'] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Itsinda:</span>
+            <span>{{ member['itsinda'] }}</span>
+        </div>
+
+        <!-- STATUS -->
+        <h2>Status</h2>
+
+        <div class="row">
+            <span class="label">Status:</span>
+            <span class="{{ 'status-active' if member['status'] == 'Active' else 'status-deactive' }}">
+                {{ member['status'] }}
+            </span>
+        </div>
+
+        {% if member['status'] == 'Deactive' %}
+        <div class="row">
+            <span class="label">Reason:</span>
+            <span>{{ member['reason'] }}</span>
+        </div>
+        {% endif %}
+
+        <!-- BACK BUTTON -->
+        <a href="/members" class="back-btn">⬅ Back</a>
+
+    </div>
 </div>
 
 </body>
