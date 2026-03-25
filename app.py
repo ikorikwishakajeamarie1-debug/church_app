@@ -1,88 +1,40 @@
-import os
 from flask import Flask, render_template, request, redirect
 import psycopg2
-from psycopg2.extras import RealDictCursor
+import os
 
 app = Flask(__name__)
 
-# ================= DATABASE CONNECTION =================
-def get_db():
-    database_url = os.environ.get("DATABASE_URL")
-
-    # Render (production)
-    if database_url:
-        return psycopg2.connect(database_url)
-
-    # Local development
-    return psycopg2.connect(
-        host="localhost",
-        database="your_db_name",   # <-- CHANGE THIS
-        user="postgres",           # <-- CHANGE THIS
-        password="your_password"   # <-- CHANGE THIS
+# ==============================
+# DATABASE CONNECTION
+# ==============================
+def get_db_connection():
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        port=5432
     )
+    return conn
 
 
-# ================= INIT DATABASE =================
-def init_db():
-    conn = get_db()
-    cur = conn.cursor()
-
-    # MEMBERS TABLE (DO NOT DROP EXISTING DATA)
-    cur.execute('''
-    CREATE TABLE IF NOT EXISTS members (
-        id SERIAL PRIMARY KEY,
-        names TEXT,
-        id_number TEXT,
-        phone TEXT,
-        birthdate TEXT,
-        gender TEXT,
-        marital_status TEXT,
-        country TEXT,
-        province TEXT,
-        district TEXT,
-        sector TEXT,
-        cell TEXT,
-        village TEXT,
-        role TEXT,
-        baptized TEXT,
-        baptism_date TEXT,
-        itsinda TEXT,
-        status TEXT,
-        reason TEXT
-    )
-    ''')
-
-    # STAFF TABLE
-    cur.execute('''
-    CREATE TABLE IF NOT EXISTS staff (
-        id SERIAL PRIMARY KEY,
-        names TEXT,
-        id_number TEXT,
-        gender TEXT,
-        phone TEXT,
-        role TEXT,
-        status TEXT
-    )
-    ''')
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-
-# ================= HOME =================
+# ==============================
+# HOME / DASHBOARD
+# ==============================
 @app.route('/')
-def home():
-    return redirect('/members')
+def dashboard():
+    return render_template('dashboard.html')
 
 
-# ================= MEMBERS =================
+# ==============================
+# MEMBERS
+# ==============================
 @app.route('/members')
 def members():
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    conn = get_db_connection()
+    cur = conn.cursor()
 
-    cur.execute("SELECT * FROM members ORDER BY id DESC")
+    cur.execute("SELECT * FROM members")
     members = cur.fetchall()
 
     cur.close()
@@ -91,127 +43,122 @@ def members():
     return render_template('members.html', members=members)
 
 
-# ================= ADD MEMBER =================
-@app.route('/add_member', methods=['POST'])
-def add_member():
-    data = request.form
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute('''
-    INSERT INTO members (
-        names, id_number, phone, birthdate, gender, marital_status,
-        country, province, district, sector, cell, village,
-        role, baptized, baptism_date, itsinda, status, reason
-    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-    ''', (
-        data.get('names'),
-        data.get('id_number'),
-        data.get('phone'),
-        data.get('birthdate'),
-        data.get('gender'),
-        data.get('marital_status'),
-        data.get('country'),
-        data.get('province'),
-        data.get('district'),
-        data.get('sector'),
-        data.get('cell'),
-        data.get('village'),
-        data.get('role'),
-        data.get('baptized'),
-        data.get('baptism_date'),
-        data.get('itsinda'),
-        data.get('status'),
-        data.get('reason')
-    ))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect('/members')
-
-
-# ================= VIEW MEMBER =================
-@app.route('/view_member/<int:id>')
-def view_member(id):
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-
-    cur.execute("SELECT * FROM members WHERE id=%s", (id,))
-    member = cur.fetchone()
-
-    cur.close()
-    conn.close()
-
-    return render_template('view_member.html', member=member)
-
-
-# ================= STAFF =================
-from flask import Flask, render_template, request, redirect
-
-app = Flask(__name__)
-
-# Temporary storage (replace with DB if you already use one)
-staff_list = []
-
-@app.route('/')
-def home():
-    return redirect('/staff')
-
-
+# ==============================
+# STAFF - VIEW
+# ==============================
 @app.route('/staff')
 def staff():
-    return render_template('staff.html', staff=staff_list)
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM staff")
+    staff = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template('staff.html', staff=staff)
 
 
+# ==============================
+# STAFF - ADD FORM
+# ==============================
 @app.route('/staff/add')
 def add_staff():
     return render_template('add_staff.html')
 
 
+# ==============================
+# STAFF - SAVE
+# ==============================
 @app.route('/save_staff', methods=['POST'])
 def save_staff():
-    staff = {
-        "id_number": request.form.get("id_number"),
-        "name": request.form.get("name"),
-        "gender": request.form.get("gender"),
-        "role": request.form.get("role"),
-        "phone": request.form.get("phone"),
-        "status": request.form.get("status")
-    }
+    name = request.form.get('name')
+    id_number = request.form.get('id_number')
+    gender = request.form.get('gender')
+    role = request.form.get('role')
+    phone = request.form.get('phone')
+    status = request.form.get('status')
 
-    staff_list.append(staff)
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO staff (name, id_number, gender, role, phone, status)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (name, id_number, gender, role, phone, status))
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return redirect('/staff')
 
 
-@app.route('/delete/<int:index>')
-def delete_staff(index):
-    if 0 <= index < len(staff_list):
-        staff_list.pop(index)
+# ==============================
+# STAFF - DELETE
+# ==============================
+@app.route('/delete_staff/<int:id>')
+def delete_staff(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM staff WHERE id = %s", (id,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
     return redirect('/staff')
 
 
-@app.route('/edit/<int:index>')
-def edit_staff(index):
-    staff = staff_list[index]
-    return render_template('edit_staff.html', staff=staff, index=index)
+# ==============================
+# STAFF - EDIT FORM
+# ==============================
+@app.route('/edit_staff/<int:id>')
+def edit_staff(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM staff WHERE id = %s", (id,))
+    staff = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return render_template('edit_staff.html', staff=staff)
 
 
-@app.route('/update/<int:index>', methods=['POST'])
-def update_staff(index):
-    staff_list[index] = {
-        "id_number": request.form.get("id_number"),
-        "name": request.form.get("name"),
-        "gender": request.form.get("gender"),
-        "role": request.form.get("role"),
-        "phone": request.form.get("phone"),
-        "status": request.form.get("status")
-    }
+# ==============================
+# STAFF - UPDATE
+# ==============================
+@app.route('/update_staff/<int:id>', methods=['POST'])
+def update_staff(id):
+    name = request.form.get('name')
+    id_number = request.form.get('id_number')
+    gender = request.form.get('gender')
+    role = request.form.get('role')
+    phone = request.form.get('phone')
+    status = request.form.get('status')
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE staff
+        SET name=%s, id_number=%s, gender=%s, role=%s, phone=%s, status=%s
+        WHERE id=%s
+    """, (name, id_number, gender, role, phone, status, id))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
     return redirect('/staff')
 
 
+# ==============================
+# RUN APP
+# ==============================
 if __name__ == "__main__":
     app.run(debug=True)
