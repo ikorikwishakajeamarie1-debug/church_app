@@ -221,11 +221,6 @@ def save_staff():
     # save to database (or list)
     
     return redirect('/staff')  # redirect back to staff page
-
-@app.route('/staff')
-def staff():
-    staff_list = []  # fetch from DB if available
-    return render_template('staff.html', staff=staff_list)
 @app.route('/staff/add')
 def add_staff():
     return render_template('add_staff.html')
