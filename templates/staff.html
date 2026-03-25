@@ -1,3 +1,4 @@
+<h2>STAFF TEMPLATE LOADED</h2>
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,29 +91,40 @@
     <div id="table">
         <button class="btn add" onclick="showForm()">+ Add Staff</button>
 
-        <table>
-            <tr>
-                <th>Names</th>
-                <th>ID Number</th>
-                <th>Gender</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Role</th>
-            </tr>
+        <table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Names</th>
+            <th>ID Number</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th> <!-- ✅ NEW COLUMN -->
+        </tr>
+    </thead>
 
-            {% for s in staff %}
-            <tr>
-                <td>{{ s.names }}</td>
-                <td>{{ s.id_number }}</td>
-                <td>{{ s.gender }}</td>
-                <td>{{ s.phone }}</td>
-                <td>{{ s.status }}</td>
-                <td>{{ s.role }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <tbody>
+        {% for s in staff %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.names }}</td>
+            <td>{{ s.id_number }}</td>
+            <td>{{ s.gender }}</td>
+            <td>{{ s.phone }}</td>
+            <td>{{ s.role }}</td>
+            <td>{{ s.status }}</td>
 
+            <td>
+                <!-- View/Edit/Delete buttons -->
+                <a href="/edit_staff/{{ s.id }}">Edit</a> |
+                <a href="/delete_staff/{{ s.id }}" onclick="return confirm('Delete this staff?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
     <!-- FORM -->
     <div id="form" class="form-section">
 
