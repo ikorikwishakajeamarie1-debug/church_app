@@ -95,6 +95,7 @@
             <td>{{ member.reason }}</td>
             <td>
                 <a href="/edit_member/{{ member.id }}" class="button edit">Edit</a>
+                <a href="/members/add" class="button add">Add Member</a>
                 <a href="/delete_member/{{ member.id }}" class="button delete" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>
