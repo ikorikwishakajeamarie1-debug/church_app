@@ -101,8 +101,7 @@ def save_member():
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO members (
-                names, id_number, birthdate, phone, gender, marital_status,
-                parent_name, country, province, district, sector, cell, village,
+                names, id_number, birthdate, phone, gender, marital_status,country, province, district, sector, cell, village,
                 role, baptized, baptism_date, itsinda, status, reason
             ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """, data)
