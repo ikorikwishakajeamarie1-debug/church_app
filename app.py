@@ -159,6 +159,10 @@ def update_member(id):
         print("Error updating member:", e)
         return "❌ Internal Server Error — check console/logs"
     return redirect('/members')
-
+@app.route("/members")
+def members():
+    cursor.execute("SELECT * FROM members")
+    all_members = cursor.fetchall()
+    return render_template("members.html", members=all_members)
 if __name__ == "__main__":
     app.run(debug=True)
