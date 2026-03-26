@@ -1,20 +1,34 @@
 from flask import Flask, render_template, request, redirect
 import psycopg2
 import os
+import urllib.parse
 
 app = Flask(__name__)
 
-# DATABASE CONNECTION
+# ================= DATABASE CONNECTION =================
 def get_db_connection():
-    return psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        database=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        port=5432
+    DATABASE_URL = os.environ.get("DATABASE_URL")  # Use the full Render PostgreSQL URL
+    if not DATABASE_URL:
+        raise Exception("DATABASE_URL not set. Please set it to your church-db URL.")
+    
+    # Parse URL (optional but ensures compatibility)
+    result = urllib.parse.urlparse(DATABASE_URL)
+    username = result.username
+    password = result.password
+    database = result.path[1:]  # remove leading /
+    hostname = result.hostname
+    port = result.port or 5432  # default PostgreSQL port
+    
+    conn = psycopg2.connect(
+        host=hostname,
+        database=database,
+        user=username,
+        password=password,
+        port=port
     )
+    return conn
 
-# DASHBOARD
+# ================= DASHBOARD =================
 @app.route('/')
 def dashboard():
     return render_template('dashboard.html')
@@ -108,14 +122,31 @@ def update_member(id):
 
     cur.execute("""
     UPDATE members SET
-    name=%s, id_number=%s, phone=%s, gender=%s, status=%s
+        name=%s, id_number=%s, birthdate=%s, phone=%s, gender=%s,
+        marital_status=%s, parent_name=%s, country=%s, province=%s, district=%s,
+        sector=%s, cell=%s, village=%s, role=%s, baptized=%s, baptized_date=%s,
+        itsinda=%s, status=%s, reason=%s
     WHERE id=%s
     """, (
         request.form['name'],
         request.form['id_number'],
+        request.form['birthdate'],
         request.form['phone'],
         request.form['gender'],
-        request.form['status'],
+        request.form['marital_status'],
+        request.form.get('parent_name'),
+        request.form.get('country'),
+        request.form.get('province'),
+        request.form.get('district'),
+        request.form.get('sector'),
+        request.form.get('cell'),
+        request.form.get('village'),
+        request.form.get('role'),
+        request.form.get('baptized'),
+        request.form.get('baptized_date'),
+        request.form.get('itsinda'),
+        request.form.get('status'),
+        request.form.get('reason'),
         id
     ))
 

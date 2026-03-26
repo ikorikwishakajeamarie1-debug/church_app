@@ -1,172 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Church Data Management System</title>
-
+    <title>Members List</title>
     <style>
         body {
             font-family: Arial;
-            margin: 0;
             background: #f4f6f9;
+            margin: 20px;
         }
-
-        /* TITLE */
-        .title {
-            text-align: center;
-            font-size: 24px;
-            padding: 15px;
-            font-weight: bold;
-        }
-
-        /* MENU */
-        .menu {
-            background: #2c3e50;
-            padding: 10px;
+        h2 {
             text-align: center;
         }
-
-        .menu a {
-            color: white;
-            margin: 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .menu a:hover {
-            text-decoration: underline;
-        }
-
-        /* SEARCH */
-        .search-box {
-            text-align: center;
-            margin: 15px;
-        }
-
-        .search-box input {
-            padding: 8px;
-            width: 250px;
-        }
-
-        .search-box button {
-            padding: 8px 12px;
-        }
-
-        /* CONTAINER */
-        .container {
-            width: 90%;
-            margin: auto;
-        }
-
-        /* ADD BUTTON */
-        .add-btn {
-            float: right;
-            margin-bottom: 10px;
-            background: #7f8c8d;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-        }
-
-        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
         }
-
-        th {
-            background: #34495e;
-            color: white;
-            padding: 10px;
-        }
-
-        td {
+        th, td {
+            border: 1px solid #ccc;
             padding: 8px;
-            border-bottom: 1px solid #ddd;
+            text-align: center;
         }
-
-        /* ACTION BUTTONS */
-        .btn-view {
-            background: #3498db;
+        th {
+            background: #007BFF;
             color: white;
-            padding: 5px 10px;
-            text-decoration: none;
         }
-
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        a.button {
             padding: 5px 10px;
+            color: white;
             text-decoration: none;
+            border-radius: 4px;
+        }
+        .edit {
+            background: green;
+        }
+        .delete {
+            background: red;
         }
     </style>
 </head>
-
 <body>
 
-<!-- SEARCH -->
-<div class="search-box">
-    <input type="text" placeholder="Search by name, phone, district">
-    <button>Search</button>
-</div>
+<h2>Church Members</h2>
 
-<!-- TITLE -->
-<div class="title">
-    Church Data Management System
-</div>
-
-<!-- MENU -->
-<div class="menu">
-    <a href="/">Dashboard</a>
-    <a href="/members">Church Members</a>
-    <a href="/staff">Staff</a>
-    <a href="#">Infrastructure</a>
-    <a href="#">Finance</a>
-    <a href="#">Newborn</a>
-</div>
-
-<!-- CONTENT -->
-<div class="container">
-
-    <button class="add-btn">+ Add Member</button>
-
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>ID Number</th>
-                <th>Gender</th>
-                <th>Phone</th>
-                <th>District</th>
-                <th>Role</th>
-                <th>Baptized</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for m in members %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ m.names }}</td>
-                <td>{{ m.id_number }}</td>
-                <td>{{ m.gender }}</td>
-                <td>{{ m.phone }}</td>
-                <td>{{ m.district }}</td>
-                <td>{{ m.role }}</td>
-                <td>{{ m.baptized }}</td>
-
-                <td>
-                    <a class="btn-view" href="/view_member/{{ m.id }}">View</a>
-                    <a class="btn-delete" href="/delete_member/{{ m.id }}">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-</div>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>ID Number</th>
+            <th>Birthdate</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Marital Status</th>
+            <th>Parent Name</th>
+            <th>Country</th>
+            <th>Province</th>
+            <th>District</th>
+            <th>Sector</th>
+            <th>Cell</th>
+            <th>Village</th>
+            <th>Role</th>
+            <th>Baptized</th>
+            <th>Baptized Date</th>
+            <th>Itsinda</th>
+            <th>Status</th>
+            <th>Reason</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td>{{ member.name }}</td>
+            <td>{{ member.id_number }}</td>
+            <td>{{ member.birthdate }}</td>
+            <td>{{ member.phone }}</td>
+            <td>{{ member.gender }}</td>
+            <td>{{ member.marital_status }}</td>
+            <td>{{ member.parent_name }}</td>
+            <td>{{ member.country }}</td>
+            <td>{{ member.province }}</td>
+            <td>{{ member.district }}</td>
+            <td>{{ member.sector }}</td>
+            <td>{{ member.cell }}</td>
+            <td>{{ member.village }}</td>
+            <td>{{ member.role }}</td>
+            <td>{{ member.baptized }}</td>
+            <td>{{ member.baptized_date }}</td>
+            <td>{{ member.itsinda }}</td>
+            <td>{{ member.status }}</td>
+            <td>{{ member.reason }}</td>
+            <td>
+                <a href="/edit_member/{{ member.id }}" class="button edit">Edit</a>
+                <a href="/delete_member/{{ member.id }}" class="button delete" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 </body>
 </html>

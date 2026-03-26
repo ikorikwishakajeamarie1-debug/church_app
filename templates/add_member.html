@@ -5,6 +5,7 @@
 
 <form action="/save_member" method="POST">
 
+<!-- PERSONAL -->
 <h3>Personal Identification</h3>
 Name: <input type="text" name="name" required><br>
 ID Number: <input type="text" name="id_number"><br>
@@ -30,7 +31,10 @@ Marital Status:
 Parent Name: <input type="text" name="parent_name"><br>
 </div>
 
-<h3>Location</h3>
+<!-- LOCATION -->
+<h3>Location Details</h3>
+Country: <input name="country"><br>
+Province: <input name="province"><br>
 District:
 <select name="district">
     <option>Kicukiro</option>
@@ -42,7 +46,8 @@ Sector: <input name="sector"><br>
 Cell: <input name="cell"><br>
 Village: <input name="village"><br>
 
-<h3>Church</h3>
+<!-- CHURCH -->
+<h3>Church Responsibilities</h3>
 Role:
 <select name="role">
     <option>Christian</option>
@@ -59,6 +64,8 @@ Baptized:
 
 Baptized Date:
 <input type="date" name="baptized_date"><br>
+
+Itsinda: <input name="itsinda"><br>
 
 Status:
 <select name="status" id="status" onchange="toggleReason()">
