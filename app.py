@@ -34,15 +34,11 @@ def dashboard():
     return render_template('dashboard.html')
 
 # ================= MEMBERS =================
-@app.route('/members')
+@app.route("/members")
 def members():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM members ORDER BY id ASC")
-    members = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template('members.html', members=members)
+    cursor.execute("SELECT * FROM members")
+    all_members = cursor.fetchall()
+    return render_template("members.html", members=all_members)
 
 # ADD MEMBER PAGE
 @app.route('/members/add')
@@ -159,10 +155,6 @@ def update_member(id):
         print("Error updating member:", e)
         return "❌ Internal Server Error — check console/logs"
     return redirect('/members')
-@app.route("/members")
-def members():
-    cursor.execute("SELECT * FROM members")
-    all_members = cursor.fetchall()
-    return render_template("members.html", members=all_members)
+
 if __name__ == "__main__":
     app.run(debug=True)
