@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Edit Member</title>
-
     <style>
         body { font-family: Arial; background: #f4f6f9; }
         .container { width: 70%; margin: 30px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 2px 8px rgba(0,0,0,0.1); }
@@ -24,7 +23,7 @@
 <div class="section">
 <h3>Personal Identification</h3>
 
-<input name="name" value="{{ member.name }}" placeholder="Name">
+<input name="names" value="{{ member.names }}" placeholder="Full Name" required>
 <input name="id_number" value="{{ member.id_number }}" placeholder="ID Number">
 <input type="date" name="birthdate" value="{{ member.birthdate }}">
 <input name="phone" value="{{ member.phone }}" placeholder="Phone">
@@ -37,6 +36,9 @@
 <select name="marital_status">
 <option value="Single" {% if member.marital_status=='Single' %}selected{% endif %}>Single</option>
 <option value="Married" {% if member.marital_status=='Married' %}selected{% endif %}>Married</option>
+<option value="Widow" {% if member.marital_status=='Widow' %}selected{% endif %}>Widow</option>
+<option value="Widower" {% if member.marital_status=='Widower' %}selected{% endif %}>Widower</option>
+<option value="Divorced" {% if member.marital_status=='Divorced' %}selected{% endif %}>Divorced</option>
 </select>
 
 <input name="parent_name" value="{{ member.parent_name }}" placeholder="Parent Name">
@@ -69,9 +71,13 @@
 
 <input name="itsinda" value="{{ member.itsinda }}">
 
-<input name="baptized_date" type="date" value="{{ member.baptized_date }}">
+<input type="date" name="baptism_date" value="{{ member.baptism_date }}">
 
-<input name="status" value="{{ member.status }}">
+<select name="status">
+<option value="Active" {% if member.status=='Active' %}selected{% endif %}>Active</option>
+<option value="Deactive" {% if member.status=='Deactive' %}selected{% endif %}>Deactive</option>
+</select>
+
 <input name="reason" value="{{ member.reason }}" placeholder="Reason if inactive">
 
 </div>
