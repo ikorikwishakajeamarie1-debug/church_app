@@ -41,10 +41,36 @@ def members():
     return render_template("members.html", members=all_members)
 
 # ADD MEMBER PAGE
-@app.route('/members/add')
+@app.route("/members/add", methods=["GET", "POST"])
 def add_member():
-    return render_template('add_member.html')
+    if request.method == "POST":
+        names = request.form["names"]
+        id_number = request.form["id_number"]
+        birthdate = request.form["birthdate"]
+        phone = request.form["phone"]
+        gender = request.form["gender"]
+        marital_status = request.form["marital_status"]
+        country = request.form["country"]
+        province = request.form["province"]
+        district = request.form["district"]
+        sector = request.form["sector"]
+        cell = request.form["cell"]
+        village = request.form["village"]
+        role = request.form["role"]
 
+        cursor.execute("""
+            INSERT INTO members 
+            (names, id_number, birthdate, phone, gender, marital_status,
+             country, province, district, sector, cell, village, role)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        """, (names, id_number, birthdate, phone, gender, marital_status,
+              country, province, district, sector, cell, village, role))
+
+        conn.commit()
+
+        return redirect("/members")  # 👈 VERY IMPORTANT
+
+    return render_template("add_member.html")
 # SAVE MEMBER
 @app.route('/save_member', methods=['POST'])
 def save_member():
