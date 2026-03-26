@@ -1,34 +1,172 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Church Data Management System</title>
 
-<h2>Church Members</h2>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f4f6f9;
+        }
 
-<a href="/members/add"><button>Add Member</button></a>
+        /* TITLE */
+        .title {
+            text-align: center;
+            font-size: 24px;
+            padding: 15px;
+            font-weight: bold;
+        }
 
-<table border="1">
-<tr>
-    <th>Name</th>
-    <th>ID</th>
-    <th>Phone</th>
-    <th>Gender</th>
-    <th>Status</th>
-    <th>Action</th>
-</tr>
+        /* MENU */
+        .menu {
+            background: #2c3e50;
+            padding: 10px;
+            text-align: center;
+        }
 
-{% for m in members %}
-<tr>
-    <td>{{ m[1] }}</td>
-    <td>{{ m[2] }}</td>
-    <td>{{ m[4] }}</td>
-    <td>{{ m[5] }}</td>
-    <td>{{ m[15] }}</td>
-    <td>
-        <a href="/edit_member/{{ m[0] }}">Edit</a> |
-        <a href="/delete_member/{{ m[0] }}">Delete</a>
-    </td>
-</tr>
-{% endfor %}
+        .menu a {
+            color: white;
+            margin: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-</table>
+        .menu a:hover {
+            text-decoration: underline;
+        }
 
-{% endblock %}
+        /* SEARCH */
+        .search-box {
+            text-align: center;
+            margin: 15px;
+        }
+
+        .search-box input {
+            padding: 8px;
+            width: 250px;
+        }
+
+        .search-box button {
+            padding: 8px 12px;
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+
+        /* ADD BUTTON */
+        .add-btn {
+            float: right;
+            margin-bottom: 10px;
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* ACTION BUTTONS */
+        .btn-view {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SEARCH -->
+<div class="search-box">
+    <input type="text" placeholder="Search by name, phone, district">
+    <button>Search</button>
+</div>
+
+<!-- TITLE -->
+<div class="title">
+    Church Data Management System
+</div>
+
+<!-- MENU -->
+<div class="menu">
+    <a href="/">Dashboard</a>
+    <a href="/members">Church Members</a>
+    <a href="/staff">Staff</a>
+    <a href="#">Infrastructure</a>
+    <a href="#">Finance</a>
+    <a href="#">Newborn</a>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+    <button class="add-btn">+ Add Member</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>ID Number</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>District</th>
+                <th>Role</th>
+                <th>Baptized</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for m in members %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ m.names }}</td>
+                <td>{{ m.id_number }}</td>
+                <td>{{ m.gender }}</td>
+                <td>{{ m.phone }}</td>
+                <td>{{ m.district }}</td>
+                <td>{{ m.role }}</td>
+                <td>{{ m.baptized }}</td>
+
+                <td>
+                    <a class="btn-view" href="/view_member/{{ m.id }}">View</a>
+                    <a class="btn-delete" href="/delete_member/{{ m.id }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
