@@ -1,116 +1,114 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2>Add New Member</h2>
+<form method="POST" action="/add_member">
 
-<h2>Add Member</h2>
-
-<form method="POST">
-    Name: <input type="text" name="name"><br>
-    ID Number: <input type="text" name="id_number"><br>
-    Gender: <input type="text" name="gender"><br>
-    Phone: <input type="text" name="phone"><br>
-
-    <button type="submit">Save</button>
-</form>
-
-{% endblock %}
-<h2>Add Member</h2>
-
-<form action="/save_member" method="POST">
-
-<!-- PERSONAL -->
+<!-- Personal Identification -->
 <h3>Personal Identification</h3>
-Names: <input type="text" name="names" required><br>
-ID Number: <input type="text" name="id_number"><br>
-Birthdate: <input type="date" name="birthdate"><br>
-Phone: <input type="text" name="phone"><br>
-
-Gender:
+<label>First Name:</label><br>
+<input type="text" name="first_name" required><br>
+<label>Last Name:</label><br>
+<input type="text" name="last_name" required><br>
+<label>ID Number:</label><br>
+<input type="text" name="id_number" required><br>
+<label>Date of Birth:</label><br>
+<input type="date" name="date_of_birth"><br>
+<label>Gender:</label><br>
 <select name="gender">
-    <option>Male</option>
-    <option>Female</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
 </select><br>
-
-Marital Status:
-<select name="marital_status" id="marital" onchange="toggleParent()">
+<label>Phone:</label><br>
+<input type="text" name="phone"><br>
+<label>Marital Status:</label><br>
+<select name="marital_status">
+    <option>Single</option>
     <option>Married</option>
     <option>Widow</option>
     <option>Widower</option>
     <option>Divorced</option>
-    <option>Single</option>
 </select><br>
 
-<div id="parentField" style="display:none;">
-Parent Name: <input type="text" name="parent_name"><br>
-</div>
-
-<!-- LOCATION -->
+<!-- Personal Location Details -->
 <h3>Location Details</h3>
-Country: <input name="country"><br>
-Province: <input name="province"><br>
-District:
-<select name="district">
-    <option>Kicukiro</option>
-    <option>Nyarugenge</option>
-    <option>Gasabo</option>
-</select><br>
+<label>Country:</label><br>
+<input type="text" name="country" value="Rwanda" readonly><br>
+<label>Province:</label><br>
+<input type="text" name="province" value="Kigali" readonly><br>
+<label>District:</label><br>
+<input type="text" name="district"><br>
+<label>Sector:</label><br>
+<input type="text" name="sector"><br>
+<label>Cell:</label><br>
+<input type="text" name="cell"><br>
+<label>Village:</label><br>
+<input type="text" name="village"><br>
 
-Sector: <input name="sector"><br>
-Cell: <input name="cell"><br>
-Village: <input name="village"><br>
-
-<!-- CHURCH -->
+<!-- Church Responsibilities -->
 <h3>Church Responsibilities</h3>
-Role:
+<label>Role:</label><br>
 <select name="role">
     <option>Christian</option>
-    <option>COGEE Member</option>
-    <option>Choir Committee Member</option>
-    <option>Choir Member</option>
+    <option>Choir member</option>
+    <option>COGEE member</option>
+    <option>Choir committee member</option>
 </select><br>
 
-Baptized:
-<select name="baptized">
-    <option>Yes</option>
-    <option>No</option>
+<label>Baptized:</label><br>
+<select name="baptized" id="baptized" onchange="showBaptismDate()">
+    <option value="No">No</option>
+    <option value="Yes">Yes</option>
 </select><br>
 
-Baptism Date:
-<input type="date" name="baptism_date"><br>
+<div id="baptismDateDiv" style="display:none;">
+    <label>Baptism Date:</label><br>
+    <input type="date" name="baptism_date"><br>
+</div>
 
-Itsinda: <input name="itsinda"><br>
-
-Status:
-<select name="status" id="status" onchange="toggleReason()">
-    <option>Active</option>
-    <option>Deactive</option>
+<label>Itsinda:</label><br>
+<select name="itsinda">
+    <option>Abanaziri</option>
+    <option>Abanarada</option>
+    <option>Abisiraheli</option>
+    <option>Abayosefu</option>
+    <option>Modal village</option>
+    <option>Abaleweli</option>
+    <option>Ababenyamini</option>
+    <option>Abaheburayo</option>
+    <option>Abagediyoni</option>
 </select><br>
 
-<div id="reasonField" style="display:none;">
-Reason:
-<select name="reason">
-    <option>Changed location</option>
-    <option>Changed church</option>
-    <option>1 year inactive</option>
-    <option>Abusing regulations</option>
-</select>
+<label>Status:</label><br>
+<select name="status" id="status" onchange="showInactiveReason()">
+    <option value="Active">Active</option>
+    <option value="Inactive">Inactive</option>
+</select><br>
+
+<div id="inactiveReasonDiv" style="display:none;">
+    <label>Inactive Reason:</label><br>
+    <select name="inactive_reason">
+        <option>Died</option>
+        <option>Changed location</option>
+        <option>Changed church</option>
+        <option>Last 1 year without participation</option>
+        <option>Abusing internal regulations</option>
+    </select><br>
 </div>
 
 <br>
-<button type="submit">Save</button>
-
+<button type="submit">Add Member</button>
 </form>
 
 <script>
-function toggleParent() {
-    let m = document.getElementById("marital").value;
-    document.getElementById("parentField").style.display = (m === "Single") ? "block" : "none";
+function showBaptismDate() {
+    const baptized = document.getElementById("baptized").value;
+    document.getElementById("baptismDateDiv").style.display = baptized === "Yes" ? "block" : "none";
 }
 
-function toggleReason() {
-    let s = document.getElementById("status").value;
-    document.getElementById("reasonField").style.display = (s === "Deactive") ? "block" : "none";
+function showInactiveReason() {
+    const status = document.getElementById("status").value;
+    document.getElementById("inactiveReasonDiv").style.display = status === "Inactive" ? "block" : "none";
 }
 </script>
-
 {% endblock %}
