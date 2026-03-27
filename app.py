@@ -180,6 +180,9 @@ def update_member(id):
         print("Error updating member:", e)
         return "❌ Internal Server Error — check console/logs"
     return redirect('/members')
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
