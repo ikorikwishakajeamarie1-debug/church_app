@@ -1,6 +1,15 @@
 {% extends "base.html" %}
+
 {% block content %}
 
+<h2>Add Member</h2>
+
+<form method="POST">
+    Names: <input type="text" name="names"><br><br>
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}
 <h2>Add Member</h2>
 
 <form action="/save_member" method="POST">

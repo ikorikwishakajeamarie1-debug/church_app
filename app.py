@@ -24,7 +24,7 @@ def get_db_connection():
 # ================= DASHBOARD =================
 @app.route('/')
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('index.html')
 
 # ================= MEMBERS =================
 @app.route("/members")
