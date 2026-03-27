@@ -5,25 +5,27 @@ app = Flask(__name__)
 
 # ---------------- Database Connection ----------------
 def get_db_connection():
-    conn = psycopg2.connect(
-        host="localhost",
-        database="church",      # your database name
-        user="churchuser",      # your DB username
-        password="YOUR_PASSWORD" # replace with your DB password
+    return psycopg2.connect(
+        "postgresql://churchuser:RUMwAqWwKbyDikmWMwa4KTHyxU9bHRhN@dpg-d718i91r0fns73cd00ag-a.frankfurt-postgres.render.com:5432/churchdb_dbli"
     )
-    return conn
 
 # ---------------- Home / Dashboard ----------------
 @app.route("/")
 def dashboard():
-    return render_template("dashboard.html")  # Your main dashboard template
+    return render_template("dashboard.html")
 
 # ---------------- Members Page ----------------
 @app.route("/members")
 def members():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM members")  # Ensure table name matches your DB
+    cur.execute("""
+        SELECT id, first_name, last_name, id_number, date_of_birth, gender, phone, marital_status,
+               country, province, district, sector, cell, village,
+               role, baptized, baptism_date, itsinda, status, inactive_reason
+        FROM members
+        ORDER BY id DESC
+    """)
     members_data = cur.fetchall()
     cur.close()
     conn.close()
@@ -58,27 +60,28 @@ def add_member():
         status = request.form.get("status")
         inactive_reason = request.form.get("inactive_reason") if status == "Inactive" else None
 
-        # ---------------- Insert Into Database ----------------
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO members
-            (first_name, last_name, id_number, date_of_birth, gender, phone, marital_status,
-            country, province, district, sector, cell, village,
-            role, baptized, baptism_date, itsinda, status, inactive_reason)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (first_name, last_name, id_number, date_of_birth, gender, phone, marital_status,
-              country, province, district, sector, cell, village,
-              role, baptized, baptism_date, itsinda, status, inactive_reason))
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return redirect("/members")
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO members
+                (first_name, last_name, id_number, date_of_birth, gender, phone, marital_status,
+                 country, province, district, sector, cell, village,
+                 role, baptized, baptism_date, itsinda, status, inactive_reason)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (first_name, last_name, id_number, date_of_birth, gender, phone, marital_status,
+                  country, province, district, sector, cell, village,
+                  role, baptized, baptism_date, itsinda, status, inactive_reason))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return redirect("/members")
+        except Exception as e:
+            return f"❌ Error inserting member: {e}"
 
     # GET request: show the Add Member form
     return render_template("add_member.html")
-
+    
 # ---------------- Run Flask ----------------
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,13 @@
+id,member_id,names,id_number,phone,birthdate,gender,marital_status,parent_names,country,province,district,sector,cell,village,role,baptized,baptism_date,itsinda,status,reason
+1,1,KAMANZI,120098876468363823,078853738,2003-10-22,Male,Single,NYIRANEZA,Rwanda,Kigali,Kicukiro,Masaka,GAKO,KABEZA,Christian,Yes,,Abanaziri,Deactive,Changed Location
+3,0,RUBERINKA,120088764788362,0786554357,2006-11-24,Female,Single,,Rwanda,Kigali,Kicukiro,MASAKA,GAKO,KABEZA,Christian,Yes,,Abanarada,Deactive,
+4,0,MANZI J,1198783638390224,095623748,1995-07-25,Male,Single,,Rwanda,Kigali,Kicukiro,MASAKA,AYABARAYA,gako,Choir committee,Yes,2025-01-16,Abisiraheli,Active,
+5,,KAMIKAZI Vna,12000866800378384638,078994634,1997-06-27,Female,Married,,Rwanda,Kigali,Kicukiro,masaka,cyimo,ayabaraya,Choir member,Yes,,Abanaziri,Active,
+6,,IKORUKWISHAKA Jean Marie,Male,0780090334,11998800101414101,,None,,None,Kicukiro,Masaka,Mbabe,murambi,,Married,Christian,Yes,Abanaziri,Abanarada,None
+7,,MUHOZA Confiance,Female,079654378,1200087637283537,,None,,None,Kicukiro,Masaka,Mbabe,ayabaraya,,Single,Choir Member,Yes,,Abayosefu,mukamwezi
+8,,ReV  Past UKOBIZABA Jean CLaude,Male,07887656467,11987802635735752,,Rwanda,,Kigali,Kicukiro,Masaka,Mbabe,Sangano,,Married,COGEE Member,Yes,,Abaleweli,
+9,,UMWALI,Male,078665564343,1200087637283537,1998-03-18,Rwanda,,Kigali,Kicukiro,Masaka,Mbabe,ayabaraya,,Married,Christian,Yes,,Abanaziri,
+10,,UWISSIZE Console,Female,0782867099,11987600454748832632,1997-06-10,Rwanda,,Kigali,Kicukiro,Masaka,Mbabe,murambi,,Married,Choir Member,Yes,,Abanarada,
+11,,MUTANGAMPUNDU,Female,0788090055,119894478875433,1992-02-04,Rwanda,,Kigali,Kicukiro,Masaka,Mbabe,murambi,,Married,COGEE MEMBER,Yes,,Abanarada,
+12,,MUREBAWYIRE ,Female,078890654,1198765452652425,1990-06-21,Rwanda,,Kigali,Kicukiro,Masaka,Mbabe,murambi,,Married,Christian,Yes,,Abayosefu,
+13,,NYIRANEZA,Male,0987876544,1198868937636278936,2015-02-18,Rwanda,,Kigali,Kicukiro,Masaka,Mbabe,murambi,,Married,Christian,Yes,,Abagidiyoni,

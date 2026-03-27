@@ -1,114 +1,107 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Member</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        label { display: block; margin-top: 10px; }
+        input, select { width: 300px; padding: 5px; }
+        .optional { font-size: 0.9em; color: gray; }
+        button { margin-top: 20px; padding: 10px 20px; }
+    </style>
+    <script>
+        function toggleBaptismDate() {
+            const baptized = document.getElementById('baptized').value;
+            document.getElementById('baptism_date_container').style.display = baptized === 'Yes' ? 'block' : 'none';
+        }
+        function toggleInactiveReason() {
+            const status = document.getElementById('status').value;
+            document.getElementById('inactive_reason_container').style.display = status === 'Inactive' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <h2>Add New Member</h2>
+    <form method="POST">
+        <!-- Personal Identification -->
+        <label>First Name: <input type="text" name="first_name" required></label>
+        <label>Last Name: <input type="text" name="last_name" required></label>
+        <label>ID Number: <input type="text" name="id_number" required></label>
+        <label>Birthdate: <input type="date" name="date_of_birth" required></label>
+        <label>Gender:
+            <select name="gender" required>
+                <option value="">--Select--</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </label>
+        <label>Phone Number: <input type="text" name="phone" required></label>
+        <label>Marital Status:
+            <select name="marital_status" required>
+                <option value="">--Select--</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Widow">Widow</option>
+                <option value="Widower">Widower</option>
+                <option value="Divorced">Divorced</option>
+            </select>
+        </label>
 
-{% block content %}
-<h2>Add New Member</h2>
-<form method="POST" action="/add_member">
+        <!-- Location -->
+        <label>Country: <input type="text" name="country" value="Rwanda" required></label>
+        <label>Province: <input type="text" name="province" value="Kigali" required></label>
+        <label>District: <input type="text" name="district" required></label>
+        <label>Sector: <input type="text" name="sector" required></label>
+        <label>Cell: <input type="text" name="cell" required></label>
+        <label>Village: <input type="text" name="village" required></label>
 
-<!-- Personal Identification -->
-<h3>Personal Identification</h3>
-<label>First Name:</label><br>
-<input type="text" name="first_name" required><br>
-<label>Last Name:</label><br>
-<input type="text" name="last_name" required><br>
-<label>ID Number:</label><br>
-<input type="text" name="id_number" required><br>
-<label>Date of Birth:</label><br>
-<input type="date" name="date_of_birth"><br>
-<label>Gender:</label><br>
-<select name="gender">
-    <option value="Male">Male</option>
-    <option value="Female">Female</option>
-</select><br>
-<label>Phone:</label><br>
-<input type="text" name="phone"><br>
-<label>Marital Status:</label><br>
-<select name="marital_status">
-    <option>Single</option>
-    <option>Married</option>
-    <option>Widow</option>
-    <option>Widower</option>
-    <option>Divorced</option>
-</select><br>
+        <!-- Church Responsibilities -->
+        <label>Role:
+            <select name="role" required>
+                <option value="">--Select--</option>
+                <option value="Christian">Christian</option>
+                <option value="Choir Member">Choir Member</option>
+                <option value="COGEE Member">COGEE Member</option>
+                <option value="Choir Committee Member">Choir Committee Member</option>
+            </select>
+        </label>
+        <label>Baptized:
+            <select name="baptized" id="baptized" onchange="toggleBaptismDate()" required>
+                <option value="">--Select--</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </label>
+        <div id="baptism_date_container" style="display:none;">
+            <label>Baptism Date: <input type="date" name="baptism_date"></label>
+        </div>
+        <label>Itsinda:
+            <select name="itsinda" required>
+                <option value="">--Select--</option>
+                <option value="Abanaziri">Abanaziri</option>
+                <option value="Abanarada">Abanarada</option>
+                <option value="Abisiraheli">Abisiraheli</option>
+                <option value="Abayosefu">Abayosefu</option>
+                <option value="Modal Village">Modal Village</option>
+                <option value="Abaleweli">Abaleweli</option>
+                <option value="Ababenyamini">Ababenyamini</option>
+                <option value="Abaheburayo">Abaheburayo</option>
+                <option value="Abagediyoni">Abagediyoni</option>
+            </select>
+        </label>
+        <label>Status:
+            <select name="status" id="status" onchange="toggleInactiveReason()" required>
+                <option value="">--Select--</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </label>
+        <div id="inactive_reason_container" style="display:none;">
+            <label>Inactive Reason: <input type="text" name="inactive_reason" placeholder="Reason for inactivity"></label>
+        </div>
 
-<!-- Personal Location Details -->
-<h3>Location Details</h3>
-<label>Country:</label><br>
-<input type="text" name="country" value="Rwanda" readonly><br>
-<label>Province:</label><br>
-<input type="text" name="province" value="Kigali" readonly><br>
-<label>District:</label><br>
-<input type="text" name="district"><br>
-<label>Sector:</label><br>
-<input type="text" name="sector"><br>
-<label>Cell:</label><br>
-<input type="text" name="cell"><br>
-<label>Village:</label><br>
-<input type="text" name="village"><br>
-
-<!-- Church Responsibilities -->
-<h3>Church Responsibilities</h3>
-<label>Role:</label><br>
-<select name="role">
-    <option>Christian</option>
-    <option>Choir member</option>
-    <option>COGEE member</option>
-    <option>Choir committee member</option>
-</select><br>
-
-<label>Baptized:</label><br>
-<select name="baptized" id="baptized" onchange="showBaptismDate()">
-    <option value="No">No</option>
-    <option value="Yes">Yes</option>
-</select><br>
-
-<div id="baptismDateDiv" style="display:none;">
-    <label>Baptism Date:</label><br>
-    <input type="date" name="baptism_date"><br>
-</div>
-
-<label>Itsinda:</label><br>
-<select name="itsinda">
-    <option>Abanaziri</option>
-    <option>Abanarada</option>
-    <option>Abisiraheli</option>
-    <option>Abayosefu</option>
-    <option>Modal village</option>
-    <option>Abaleweli</option>
-    <option>Ababenyamini</option>
-    <option>Abaheburayo</option>
-    <option>Abagediyoni</option>
-</select><br>
-
-<label>Status:</label><br>
-<select name="status" id="status" onchange="showInactiveReason()">
-    <option value="Active">Active</option>
-    <option value="Inactive">Inactive</option>
-</select><br>
-
-<div id="inactiveReasonDiv" style="display:none;">
-    <label>Inactive Reason:</label><br>
-    <select name="inactive_reason">
-        <option>Died</option>
-        <option>Changed location</option>
-        <option>Changed church</option>
-        <option>Last 1 year without participation</option>
-        <option>Abusing internal regulations</option>
-    </select><br>
-</div>
-
-<br>
-<button type="submit">Add Member</button>
-</form>
-
-<script>
-function showBaptismDate() {
-    const baptized = document.getElementById("baptized").value;
-    document.getElementById("baptismDateDiv").style.display = baptized === "Yes" ? "block" : "none";
-}
-
-function showInactiveReason() {
-    const status = document.getElementById("status").value;
-    document.getElementById("inactiveReasonDiv").style.display = status === "Inactive" ? "block" : "none";
-}
-</script>
-{% endblock %}
+        <button type="submit">Save Member</button>
+    </form>
+</body>
+</html>
