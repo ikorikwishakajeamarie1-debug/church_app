@@ -9,24 +9,17 @@ app = Flask(__name__)
 def get_db_connection():
     DATABASE_URL = os.environ.get("DATABASE_URL")
     if not DATABASE_URL:
-        raise Exception("DATABASE_URL not set. Please set it to your church-db URL.")
-    
-    # Parse URL for psycopg2
+        raise Exception("DATABASE_URL not set")
+
     result = urllib.parse.urlparse(DATABASE_URL)
-    username = result.username
-    password = result.password
-    database = result.path[1:]  # remove leading /
-    hostname = result.hostname
-    port = result.port or 5432
-    
-    conn = psycopg2.connect(
-        host=hostname,
-        database=database,
-        user=username,
-        password=password,
-        port=port
+
+    return psycopg2.connect(
+        host=result.hostname,
+        database=result.path[1:],
+        user=result.username,
+        password=result.password,
+        port=result.port or 5432
     )
-    return conn
 
 # ================= DASHBOARD =================
 @app.route('/')
@@ -36,98 +29,75 @@ def dashboard():
 # ================= MEMBERS =================
 @app.route("/members")
 def members():
-    cursor.execute("SELECT * FROM members")
-    all_members = cursor.fetchall()
-    return  "<h2>Members page is working</h2>"
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM members ORDER BY id DESC")
+    all_members = cur.fetchall()
+    cur.close()
+    conn.close()
 
-# ADD MEMBER PAGE
+    return render_template("members.html", members=all_members)
+
+# ================= ADD MEMBER =================
 @app.route("/members/add", methods=["GET", "POST"])
 def add_member():
     if request.method == "POST":
-        names = request.form["names"]
-        id_number = request.form["id_number"]
-        birthdate = request.form["birthdate"]
-        phone = request.form["phone"]
-        gender = request.form["gender"]
-        marital_status = request.form["marital_status"]
-        country = request.form["country"]
-        province = request.form["province"]
-        district = request.form["district"]
-        sector = request.form["sector"]
-        cell = request.form["cell"]
-        village = request.form["village"]
-        role = request.form["role"]
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
 
-        cursor.execute("""
-            INSERT INTO members 
-            (names, id_number, birthdate, phone, gender, marital_status,
-             country, province, district, sector, cell, village, role)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (names, id_number, birthdate, phone, gender, marital_status,
-              country, province, district, sector, cell, village, role))
+            cur.execute("""
+                INSERT INTO members (
+                    names, id_number, birthdate, phone, gender, marital_status,
+                    country, province, district, sector, cell, village,
+                    role, baptized, baptism_date, itsinda, status, reason
+                )
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get("names"),
+                request.form.get("id_number"),
+                request.form.get("birthdate"),
+                request.form.get("phone"),
+                request.form.get("gender"),
+                request.form.get("marital_status"),
+                request.form.get("country"),
+                request.form.get("province"),
+                request.form.get("district"),
+                request.form.get("sector"),
+                request.form.get("cell"),
+                request.form.get("village"),
+                request.form.get("role"),
+                request.form.get("baptized"),
+                request.form.get("baptism_date"),
+                request.form.get("itsinda"),
+                request.form.get("status"),
+                request.form.get("reason")
+            ))
 
-        conn.commit()
+            conn.commit()
+            cur.close()
+            conn.close()
 
-        return redirect("/members")  # 👈 VERY IMPORTANT
+            return redirect("/members")
+
+        except Exception as e:
+            print("Error inserting member:", e)
+            return "❌ Error saving member"
 
     return render_template("add_member.html")
-# SAVE MEMBER
-@app.route('/save_member', methods=['POST'])
-def save_member():
-    data = (
-        request.form.get('name'),
-        request.form.get('id_number'),
-        request.form.get('birthdate'),
-        request.form.get('phone'),
-        request.form.get('gender'),
-        request.form.get('marital_status'),
-        request.form.get('parent_name'),
-        request.form.get('country'),
-        request.form.get('province'),
-        request.form.get('district'),
-        request.form.get('sector'),
-        request.form.get('cell'),
-        request.form.get('village'),
-        request.form.get('role'),
-        request.form.get('baptized'),
-        request.form.get('baptized_date'),
-        request.form.get('itsinda'),
-        request.form.get('status'),
-        request.form.get('reason')
-    )
 
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO members (
-                names, id_number, birthdate, phone, gender, marital_status,country, province, district, sector, cell, village,
-                role, baptized, baptism_date, itsinda, status, reason
-            ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """, data)
-        conn.commit()
-        cur.close()
-        conn.close()
-        return redirect('/members')
-    except Exception as e:
-        print("Error inserting member:", e)
-        return "❌ Internal Server Error — check console/logs"
-
-# DELETE MEMBER
+# ================= DELETE =================
 @app.route('/delete_member/<int:id>')
 def delete_member(id):
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("DELETE FROM members WHERE id=%s", (id,))
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print("Error deleting member:", e)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM members WHERE id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
     return redirect('/members')
 
-# EDIT MEMBER
+# ================= EDIT =================
 @app.route('/edit_member/<int:id>')
 def edit_member(id):
     conn = get_db_connection()
@@ -136,57 +106,57 @@ def edit_member(id):
     member = cur.fetchone()
     cur.close()
     conn.close()
+
     return render_template('edit_member.html', member=member)
 
-# UPDATE MEMBER
+# ================= UPDATE =================
 @app.route('/update_member/<int:id>', methods=['POST'])
 def update_member(id):
     try:
         conn = get_db_connection()
         cur = conn.cursor()
+
         cur.execute("""
             UPDATE members SET
-                names=%s, id_number=%s, birthdate=%s, phone=%s, gender=%s,
-                marital_status=%s, parent_name=%s, country=%s, province=%s, district=%s,
-                sector=%s, cell=%s, village=%s, role=%s, baptized=%s, baptism_date=%s,
+                names=%s, id_number=%s, birthdate=%s, phone=%s,
+                gender=%s, marital_status=%s,
+                country=%s, province=%s, district=%s,
+                sector=%s, cell=%s, village=%s,
+                role=%s, baptized=%s, baptism_date=%s,
                 itsinda=%s, status=%s, reason=%s
             WHERE id=%s
         """, (
-            request.form.get('name'),
-            request.form.get('id_number'),
-            request.form.get('birthdate'),
-            request.form.get('phone'),
-            request.form.get('gender'),
-            request.form.get('marital_status'),
-            request.form.get('parent_name'),
-            request.form.get('country'),
-            request.form.get('province'),
-            request.form.get('district'),
-            request.form.get('sector'),
-            request.form.get('cell'),
-            request.form.get('village'),
-            request.form.get('role'),
-            request.form.get('baptized'),
-            request.form.get('baptized_date'),
-            request.form.get('itsinda'),
-            request.form.get('status'),
-            request.form.get('reason'),
+            request.form.get("names"),
+            request.form.get("id_number"),
+            request.form.get("birthdate"),
+            request.form.get("phone"),
+            request.form.get("gender"),
+            request.form.get("marital_status"),
+            request.form.get("country"),
+            request.form.get("province"),
+            request.form.get("district"),
+            request.form.get("sector"),
+            request.form.get("cell"),
+            request.form.get("village"),
+            request.form.get("role"),
+            request.form.get("baptized"),
+            request.form.get("baptism_date"),
+            request.form.get("itsinda"),
+            request.form.get("status"),
+            request.form.get("reason"),
             id
         ))
+
         conn.commit()
         cur.close()
         conn.close()
+
     except Exception as e:
         print("Error updating member:", e)
-        return "❌ Internal Server Error — check console/logs"
+        return "❌ Error updating member"
+
     return redirect('/members')
-from flask import Flask, render_template
 
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
+# ================= RUN =================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)

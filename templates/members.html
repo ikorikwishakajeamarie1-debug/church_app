@@ -1,114 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Members List</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-            margin: 20px;
+    <title>Add Member</title>
+
+    <script>
+        function toggleBaptismDate() {
+            let baptized = document.getElementById("baptized").value;
+            document.getElementById("baptism_date_field").style.display =
+                baptized === "Yes" ? "block" : "none";
         }
-        h2 {
-            text-align: center;
+
+        function toggleInactiveReason() {
+            let status = document.getElementById("status").value;
+            document.getElementById("inactive_reason_field").style.display =
+                status === "Inactive" ? "block" : "none";
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background: #007BFF;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background: #f2f2f2;
-        }
-        a.button {
-            padding: 5px 10px;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .edit {
-            background: green;
-        }
-        .delete {
-            background: red;
-        }
-    </style>
+    </script>
 </head>
+
 <body>
 
-<h2>Church Members</h2>
+<h2>Add New Member</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>ID Number</th>
-            <th>Birthdate</th>
-            <th>Phone</th>
-            <th>Gender</th>
-            <th>Marital Status</th>
-            <th>Parent Name</th>
-            <th>Country</th>
-            <th>Province</th>
-            <th>District</th>
-            <th>Sector</th>
-            <th>Cell</th>
-            <th>Village</th>
-            <th>Role</th>
-            <th>Baptized</th>
-            <th>Baptized Date</th>
-            <th>Itsinda</th>
-            <th>Status</th>
-            <th>Reason</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for member in members %}
-        <tr>
-            <td>{{ member.name }}</td>
-            <td>{{ member.id_number }}</td>
-            <td>{{ member.birthdate }}</td>
-            <td>{{ member.phone }}</td>
-            <td>{{ member.gender }}</td>
-            <td>{{ member.marital_status }}</td>
-            <td>{{ member.parent_name }}</td>
-            <td>{{ member.country }}</td>
-            <td>{{ member.province }}</td>
-            <td>{{ member.district }}</td>
-            <td>{{ member.sector }}</td>
-            <td>{{ member.cell }}</td>
-            <td>{{ member.village }}</td>
-            <td>{{ member.role }}</td>
-            <td>{{ member.baptized }}</td>
-            <td>{{ member.baptized_date }}</td>
-            <td>{{ member.itsinda }}</td>
-            <td>{{ member.status }}</td>
-            <td>{{ member.reason }}</td>
-            <td>
-                <a href="/edit_member/{{ member.id }}" class="button edit">Edit</a>
-                <a href="/member/add">Add Member</a>
-                <a href="/delete_member/{{ member.id }}" class="button delete" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<form method="POST">
+
+<h3>Personal Identification</h3>
+Names: <input type="text" name="names"><br><br>
+ID Number: <input type="text" name="id_number"><br><br>
+Birthdate: <input type="date" name="birthdate"><br><br>
+Phone: <input type="text" name="phone"><br><br>
+
+Marital Status:
+<select name="marital_status">
+    <option>Married</option>
+    <option>Widow</option>
+    <option>Widower</option>
+    <option>Divorced</option>
+    <option>Single</option>
+</select><br><br>
+
+Gender:
+<select name="gender">
+    <option>Male</option>
+    <option>Female</option>
+</select><br><br>
+
+<h3>Location Details</h3>
+Country: <input type="text" name="country" value="Rwanda"><br><br>
+Province: <input type="text" name="province" value="Kigali"><br><br>
+District: <input type="text" name="district"><br><br>
+Sector: <input type="text" name="sector"><br><br>
+Cell: <input type="text" name="cell"><br><br>
+Village: <input type="text" name="village"><br><br>
+
+<h3>Church Responsibilities</h3>
+
+Role:
+<select name="role">
+    <option>Christian</option>
+    <option>Choir Member</option>
+    <option>COGEE Member</option>
+    <option>Choir Committee Member</option>
+</select><br><br>
+
+Baptized:
+<select name="baptized" id="baptized" onchange="toggleBaptismDate()">
+    <option>No</option>
+    <option>Yes</option>
+</select><br><br>
+
+<div id="baptism_date_field" style="display:none;">
+    Baptism Date: <input type="date" name="baptism_date"><br><br>
+</div>
+
+Status:
+<select name="status" id="status" onchange="toggleInactiveReason()">
+    <option>Active</option>
+    <option>Inactive</option>
+</select><br><br>
+
+<div id="inactive_reason_field" style="display:none;">
+    Reason:
+    <select name="inactive_reason">
+        <option>Died</option>
+        <option>Changed Location</option>
+        <option>Changed Church</option>
+        <option>1 Year Without Participation</option>
+        <option>Abusing Church Regulations</option>
+    </select><br><br>
+</div>
+
+Itsinda:
+<select name="itsinda">
+    <option>Abanaziri</option>
+    <option>Abanarada</option>
+    <option>Abisiraheli</option>
+    <option>Abayosefu</option>
+    <option>Modal Village</option>
+    <option>Abaleweli</option>
+    <option>Ababenyamini</option>
+    <option>Abaheburayo</option>
+    <option>Abagidiyoni</option>
+</select><br><br>
+
+<button type="submit">Save Member</button>
+
+</form>
 
 </body>
 </html>
-<form method="POST" action="/add_member">
-    <input type="text" name="first_name" placeholder="First Name" required>
-    <input type="text" name="last_name" placeholder="Last Name" required>
-    <input type="text" name="id_number" placeholder="ID Number" required>
-    <!-- Add all other fields like date of birth, phone, etc. -->
-    <button type="submit">Add Member</button>
-</form>
