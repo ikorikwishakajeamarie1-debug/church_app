@@ -38,7 +38,7 @@ def dashboard():
 def members():
     cursor.execute("SELECT * FROM members")
     all_members = cursor.fetchall()
-    return render_template("members.html", members=all_members)
+    return  "<h2>Members page is working</h2>"
 
 # ADD MEMBER PAGE
 @app.route("/members/add", methods=["GET", "POST"])
@@ -180,9 +180,13 @@ def update_member(id):
         print("Error updating member:", e)
         return "❌ Internal Server Error — check console/logs"
     return redirect('/members')
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=10000)
