@@ -1,28 +1,22 @@
+<!-- templates/base.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Church Data Management System</title>
 </head>
-
 <body>
+    <header>
+        <h1>Church Data Management System</h1>
+        <nav>
+            <a href="/">Dashboard</a> |
+            <a href="/members">Church Members</a>
+            <!-- other headers -->
+        </nav>
+    </header>
 
-<!-- ✅ TITLE -->
-<h1>Church Data Management System</h1>
-
-<!-- ✅ NAVIGATION -->
-<nav>
-    <a href="/">Dashboard</a> |
-    <a href="/members">Church Members</a> |
-    <a href="#">Staff</a> |
-    <a href="#">Infrastructure</a> |
-    <a href="#">Finance</a> |
-    <a href="#">Newborn</a>
-</nav>
-
-<hr>
-
-<!-- ✅ PAGE CONTENT -->
-{% block content %}{% endblock %}
-
+    <main>
+        {% block content %}{% endblock %}
+    </main>
 </body>
 </html>

@@ -29,14 +29,9 @@ def dashboard():
 # ================= MEMBERS =================
 @app.route("/members")
 def members():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM members ORDER BY id DESC")
-    all_members = cur.fetchall()
-    cur.close()
-    conn.close()
-
-    return render_template("members.html", members=all_members)
+    # Fetch members from database
+    members_data = get_all_members()  # your function
+    return render_template("members.html", members=members_data)
 
 # ================= ADD MEMBER =================
 @app.route('/add_member', methods=['GET', 'POST'])
